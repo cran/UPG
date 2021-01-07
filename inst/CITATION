@@ -1,0 +1,45 @@
+if(!exists("meta") || is.null(meta)) {meta <- packageDescription("UPG")}
+year <- sub("-.*", "", meta$Date)
+version <- meta$Version
+
+bibentry(
+  header = "To cite the paper introducing the UPG package in publications please use:",
+  bibtype = "techreport",
+  title = "Efficient Bayesian Modeling of Binary and Categorical Data in {R}: The {UPG} Package",
+  author = personList(
+    person(given = "Gregor", family = "Zens"),
+    person(given = "Sylvia", family = "Fr\u00FChwirth-Schnatter"),
+    person(given = "Helga", family = "Wagner")),
+  year = "2020",
+  institution = "arXiv preprint",
+  textVersion = "Zens, G., Fr\u00FChwirth-Schnatter S., and Wagner H. (2020). Efficient Bayesian Modeling of Binary and Categorical Data in R: The UPG Package. arXiv Preprint."
+)
+
+
+bibentry(
+  header = "To cite the paper introducing the underyling methodology in publications please use:",
+  bibtype = "techreport",
+  title = "Ultimate P\u00F3lya Gamma Samplers - Efficient MCMC for possibly imbalanced binary and categorical data",
+  author = personList(
+    person(given = "Sylvia", family = "Fr\u00FChwirth-Schnatter"),
+    person(given = "Gregor", family = "Zens"),
+    person(given = "Helga", family = "Wagner")),
+  year = "2020",
+  institution = "arXiv preprint",
+  number = {2011.06898},
+  textVersion = "Fr\u00FChwirth-Schnatter, S., Zens, G., & Wagner, H. (2020). Ultimate P\u00F3lya Gamma Samplers - Efficient MCMC for possibly imbalanced binary and categorical data. arXiv preprint arXiv:2011.06898."
+)
+
+bibentry(
+  header = "To cite the UPG package directly please use:",
+  bibtype = "Manual",
+  title = "{UPG}: {E}fficient Bayesian Models for Binary and Categorical Data",
+  author = personList(
+    person(given = "Gregor", family = "Zens"),
+    person(given = "Sylvia", family = "Fr\u00FChwirth-Schnatter"),
+    person(given = "Helga", family = "Wagner")),
+  year = "2020",
+  textVersion = paste0("Zens, G., Fr\u00FChwirth-Schnatter S., Wagner H. (2020) UPG: Efficient Bayesian Models for Binary and Categorical Data. R package version ", version, ", URL: https://CRAN.R-project.org/package=UPG.")
+)
+
+citFooter("BibTeX entries can be obtained using", sQuote('toBibtex(citation("UPG"))'))
