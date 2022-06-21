@@ -2,57 +2,63 @@
 % Please edit documentation in R/UPG.R
 \name{UPG}
 \alias{UPG}
-\title{Gibbs Sampling for Bayesian discrete choice models}
+\title{Efficient MCMC Samplers for Bayesian probit regression and various logistic regression models}
 \usage{
 UPG(y,
     X,
-    type,
-    Ni         = NULL,
-    baseline   = NULL,
-    draws      = 1000,
-    burnin     = 1000,
-    A0         = 1,
-    d0         = 0.5,
-    D0         = 0.5,
-    G0         = 99,
-    verbose    = TRUE,
-    BOOST      = TRUE,
-    beta.start = NULL)
+    model,
+    Ni          = NULL,
+    baseline    = NULL,
+    draws       = 1000,
+    burnin      = 1000,
+    A0          = 4,
+    B0          = 4,
+    d0          = 2.5,
+    D0          = 1.5,
+    G0          = 100,
+    verbose     = TRUE,
+    gamma.boost = TRUE,
+    delta.boost = TRUE,
+    beta.start  = NULL)
 }
 \arguments{
-\item{y}{a binary vector for probit and logit models. A character, factor or numeric vector for multinomial logit models. A vector of the number of successes for the binomial model.}
+\item{y}{a binary vector for probit and logit models. A character, factor or numeric vector for multinomial logit models. A numerical vector of the number of successes for the binomial model.}
 
 \item{X}{a matrix of explanatory variables including an intercept in the first column. Rows are individuals, columns are variables.}
 
-\item{type}{indicates the model to be estimated. \code{'probit'} for the probit model, \code{'logit'} for the logit model, \code{'mnl'} for the multinomial logit model or \code{'binomial'} for the binomial logit model.}
+\item{model}{indicates the model to be estimated. \code{'probit'} for the probit model, \code{'logit'} for the logit model, \code{'mnl'} for the multinomial logit model or \code{'binomial'} for the binomial logit model.}
 
 \item{Ni}{a vector containing the number of trials when estimating a binomial logit model.}
 
-\item{baseline}{a string that can be used to change the baseline category in MNL models. Default baseline is the most common category.}
+\item{baseline}{a string that can be used to change the baseline category in MNL models. Default baseline is the most commonly observed category.}
 
-\item{draws}{number of saved Gibbs sampler iterations. Default is 1000 for illustration purposes, you should use more when estimating a model (e.g. 10,000)!}
+\item{draws}{number of saved Gibbs sampler iterations. Default is 1000 for illustration purposes, you should use more when estimating a model (e.g. 10,000).}
 
-\item{burnin}{number of burned Gibbs sampler iterations. Default is 1000 for illustration purposes, you should probably use more when estimating a model (e.g. 2,000)!}
+\item{burnin}{number of burned Gibbs sampler iterations. Default is 1000 for illustration purposes, you should use more when estimating a model (e.g. 2,000).}
 
-\item{A0}{prior variance for coefficients, 1 is the default.}
+\item{A0}{prior variance for the intercept, 4 is the default.}
 
-\item{d0}{prior shape for working parameter delta, 0.5 is the default.}
+\item{B0}{prior variance for the coefficients, 4 is the default.}
 
-\item{D0}{prior rate for working parameter delta,  0.5 is the default.}
+\item{d0}{prior shape for working parameter delta, 2.5 is the default.}
 
-\item{G0}{prior variance for the intercept, 99 is the default.}
+\item{D0}{prior rate for working parameter delta,  1.5 is the default.}
 
-\item{verbose}{logical variable indicating whether model output and progress should be printed during estimation.}
+\item{G0}{prior variance for working parameter gamma, 100 is the default.}
 
-\item{BOOST}{logical variable indicating whether MCMC boosting should be used.}
+\item{verbose}{logical variable indicating whether progress should be printed during estimation.}
 
-\item{beta.start}{provide starting values for beta (e.g. for use within Gibbs sampler)}
+\item{gamma.boost}{logical variable indicating whether location-based parameter expansion boosting should be used.}
+
+\item{delta.boost}{logical variable indicating whether scale-based parameter expansion boosting should be used.}
+
+\item{beta.start}{provides starting values for beta (e.g. for use within Gibbs sampler)}
 }
 \value{
-Depending on the type of the model, \code{UPG()} returns an \code{UPG.Probit}, \code{UPG.Logit}, \code{UPG.MNL} or \code{UPG.Binomial} object.
+Depending on the estimated model, \code{UPG()} returns a \code{UPG.Probit}, \code{UPG.Logit}, \code{UPG.MNL} or \code{UPG.Binomial} object.
 }
 \description{
-\code{UPG} estimates Bayesian discrete choice models and returns the full posterior distribution for all parameters that can be used for further analysis and inference.
+\code{UPG} estimates Bayesian regression models for binary or categorical outcomes using samplers based on marginal data augmentation.
 }
 \examples{
 
@@ -60,39 +66,39 @@ Depending on the type of the model, \code{UPG()} returns an \code{UPG.Probit}, \
 library(UPG)
 
 # estimate a probit model using example data
-# warning: use more burn-ins, burnin = 100 is just for demonstration purposes
+# warning: use more burn-ins, burnin = 100 is just used for demonstration purposes
 data(lfp)
 y = lfp[,1]
 X = lfp[,-1]
-results.probit = UPG(y = y, X = X, type = "probit", verbose=TRUE, burnin = 100)
+results.probit = UPG(y = y, X = X, model = "probit", burnin = 100)
 
 # estimate a logit model using example data
-# warning: use more burn-ins, burnin = 100 is just for demonstration purposes
+# warning: use more burn-ins, burnin = 100 is just used for demonstration purposes
 data(lfp)
 y = lfp[,1]
 X = lfp[,-1]
-results.logit = UPG(y = y, X = X, type = "logit", verbose=TRUE, burnin = 100)
+results.logit = UPG(y = y, X = X, model = "logit", burnin = 100)
 
 # estimate a MNL model using example data
-# warning: use more burn-ins, burnin = 100 is just for demonstration purposes
+# warning: use more burn-ins, burnin = 100 is just used for demonstration purposes
 data(program)
 y = program[,1]
 X = program[,-1]
-results.mnl = UPG(y = y, X = X, type = "mnl", burnin = 100)
+results.mnl = UPG(y = y, X = X, model = "mnl", burnin = 100)
 
 # estimate a binomial logit model using example data
-# warning: use more burn-ins, burnin = 100 is just for demonstration purposes
+# warning: use more burn-ins, burnin = 100 is just used for demonstration purposes
 data(titanic)
 y  = titanic[,1]
 Ni = titanic[,2]
 X  = titanic[,-c(1,2)]
-results.binomial = UPG(y = y, X = X, Ni = Ni, type = "binomial", burnin = 100)
+results.binomial = UPG(y = y, X = X, Ni = Ni, model = "binomial", burnin = 100)
 
 }
 \seealso{
-\code{\link{summary.UPG.Probit}} to summarize the estimates of a discrete choice model from an \code{UPG.Probit} object and to create tables.
-\code{\link{predict.UPG.Logit}} to predict probabilities from a discrete choice model from an \code{UPG.Logit} object.
-\code{\link{plot.UPG.MNL}} to plot the results of a discrete choice model from an \code{UPG.MNL} object.
+\code{\link{summary.UPG.Probit}} to summarize a \code{UPG.Probit} object and to create tables.
+\code{\link{predict.UPG.Logit}} to predict probabilities using a \code{UPG.Logit} object.
+\code{\link{plot.UPG.MNL}} to plot a \code{UPG.MNL} object.
 }
 \author{
 Gregor Zens

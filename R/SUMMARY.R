@@ -1,24 +1,24 @@
 #' @name summary.UPG.Probit
 #'
-#' @title Estimation results and tables for UPG.Probit objects
+#' @title Estimation result summary and tables for UPG.Probit objects
 #'
-#' @description \code{summary} generates a summary of estimation results for \code{UPG.Probit} objects. Point estimates, estimated standard deviation as well as credible intervals for each variable are tabulated. In addition, an indicator quickly shows whether the credible interval includes zero or not. In addition, LaTeX, HTML and pandoc tables can be quickly generated via \code{knitr}.
+#' @description \code{summary} generates a summary of estimation results for \code{UPG.Probit} objects. Point estimates, estimated standard deviation as well as credible intervals for each variable are tabulated. In addition, an indicator quickly shows whether the credible interval includes zero or not. Moreover, LaTeX, HTML and pandoc tables can be quickly generated via \code{knitr}.
 #'
 #' @param object an object of class \code{UPG.Probit}.
-#' @param q a numerical vector of length two holding the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.
+#' @param q a numerical vector of length two providing the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.
 #' @param names a character vector indicating names for the variables used in the output.
 #' @param digits number of digits to be included in output. Last digit will be rounded using \code{round}.
-#' @param include can be used to summarize and tabulate only a subset of variables. Specificy the columns of X that should be kept in the plot. See examples for further information.
+#' @param include can be used to summarize and tabulate only a subset of variables. Specify the columns of X that should be kept in the plot. See examples for further information.
 #' @param table can be used to return a LaTeX table (\code{'latex'}), a Word table (\code{'pandoc'}) and HTML tables (\code{'html'}) via \code{knitr}. Include package "booktabs" in LaTeX preamble for LaTeX tables.
-#' @param cap character vector that can be used to specify the table caption is returned.
+#' @param cap character vector that can be used to specify the table caption.
 #' @param ... other summary parameters.
 #'
 #' @return Returns a \code{knitr_kable} object containing the summary table.
 #'
 #' @seealso
-#' \code{\link{plot.UPG.Probit}} to plot the results of a discrete choice model from an \code{UPG.Probit} object.
-#' \code{\link{predict.UPG.Probit}} to predict probabilities from a discrete choice model from an \code{UPG.Probit} object.
-#' \code{\link{coef.UPG.Probit}} to extract coefficients from an \code{UPG.Probit} object.
+#' \code{\link{plot.UPG.Probit}} to plot a \code{UPG.Probit} object.
+#' \code{\link{predict.UPG.Probit}} to predict probabilities using a \code{UPG.Probit} object.
+#' \code{\link{coef.UPG.Probit}} to extract coefficients from a \code{UPG.Probit} object.
 #'
 #' @author Gregor Zens
 #'
@@ -29,7 +29,7 @@
 #' data(lfp)
 #' y = lfp[,1]
 #' X = lfp[,-1]
-#' results.probit = UPG(y = y, X = X, type = "probit", verbose=TRUE)
+#' results.probit = UPG(y = y, X = X, model = "probit")
 #'
 #' # basic summary of regression results
 #' summary(results.probit)
@@ -61,10 +61,10 @@ summary.UPG.Probit = function(object = NULL,            #estimation output
   if(length(names) != length(include)) stop("Number of provided variable names does not match number of included variables.")
 
   #get summary statistics
-  c.point  = apply(object$posterior$beta.post[,include,1,drop=F], 2, mean)
-  c.upper  = apply(object$posterior$beta.post[,include,1,drop=F], 2, quantile, q[2])
-  c.lower  = apply(object$posterior$beta.post[,include,1,drop=F], 2, quantile, q[1])
-  c.sd     = apply(object$posterior$beta.post[,include,1,drop=F], 2, sd)
+  c.point  = apply(object$posterior$beta[,include,drop=F], 2, mean)
+  c.upper  = apply(object$posterior$beta[,include,drop=F], 2, quantile, q[2])
+  c.lower  = apply(object$posterior$beta[,include,drop=F], 2, quantile, q[1])
+  c.sd     = apply(object$posterior$beta[,include,drop=F], 2, sd)
 
   #check which coefficients are "significant"
   c.sig = ifelse((c.upper > 0 & c.lower > 0) | (c.upper < 0 & c.lower < 0), "*", "")
@@ -114,12 +114,12 @@ summary.UPG.Probit = function(object = NULL,            #estimation output
   # compute runtime, use in seconds or in minutes when > 5min
   runtime = object$runtime
   timecat = ifelse(runtime > 300,
-                   paste0(round(runtime / 60, 2), " CPU minutes."),
-                   paste0(round(runtime, 2), " CPU seconds."))
+                   paste0(round(runtime / 60, 2), " minutes."),
+                   paste0(round(runtime, 2), " seconds."))
 
   cat("\n\n--- Bayesian Probit Results --- \n\n")
   cat("N =", length(object$inputs$y),"\n")
-  cat("Analysis based on", object$inputs$nsave, "posterior draws after a burn-in period of", object$inputs$nburn, "iterations.\n")
+  cat("Analysis based on", object$inputs$draws, "posterior draws after\nan initial burn-in period of", object$inputs$burnin, "iterations.\n")
   cat("MCMC sampling took a total of",timecat,"\n")
 
 
@@ -131,23 +131,23 @@ summary.UPG.Probit = function(object = NULL,            #estimation output
 #'
 #' @title Estimation results and tables for UPG.Logit objects
 #'
-#' @description \code{summary} generates a summary of estimation results for \code{UPG.Logit} objects. Point estimates, estimated standard deviation as well as credible intervals for each variable are tabulated. In addition, an indicator quickly shows whether the credible interval includes zero or not. In addition, LaTeX, HTML and pandoc tables can be quickly generated via \code{knitr}.
+#' @description \code{summary} generates a summary of estimation results for \code{UPG.Logit} objects. Point estimates, estimated standard deviation as well as credible intervals for each variable are tabulated. In addition, an indicator quickly shows whether the credible interval includes zero or not. Moreover, LaTeX, HTML and pandoc tables can be quickly generated via \code{knitr}.
 #'
 #' @param object an object of class \code{UPG.Logit}.
-#' @param q a numerical vector of length two holding the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.
+#' @param q a numerical vector of length two providing the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.
 #' @param names a character vector indicating names for the variables used in the output.
 #' @param digits number of digits to be included in output. Last digit will be rounded using \code{round}.
-#' @param include can be used to summarize and tabulate only a subset of variables. Specificy the columns of X that should be kept in the plot. See examples for further information.
+#' @param include can be used to summarize and tabulate only a subset of variables. Specify the columns of X that should be kept in the plot. See examples for further information.
 #' @param table can be used to return a LaTeX table (\code{'latex'}), a Word table (\code{'pandoc'}) and HTML tables (\code{'html'}) via \code{knitr}. Include package "booktabs" in LaTeX preamble for LaTeX tables.
-#' @param cap character vector that can be used to specify the table caption is returned.
+#' @param cap character vector that can be used to specify the table caption.
 #' @param ... other summary parameters.
 #'
 #' @return Returns a \code{knitr_kable} object containing the summary table.
 #'
 #' @seealso
-#' \code{\link{plot.UPG.Logit}} to plot the results of a discrete choice model from an \code{UPG.Logit} object.
-#' \code{\link{predict.UPG.Logit}} to predict probabilities from a discrete choice model from an \code{UPG.Logit} object.
-#' \code{\link{coef.UPG.Logit}} to extract coefficients from an \code{UPG.Logit} object.
+#' \code{\link{plot.UPG.Logit}} to plot a \code{UPG.Logit} object.
+#' \code{\link{predict.UPG.Logit}} to predict probabilities using a \code{UPG.Logit} object.
+#' \code{\link{coef.UPG.Logit}} to extract coefficients from a \code{UPG.Logit} object.
 #'
 #' @author Gregor Zens
 #'
@@ -158,7 +158,7 @@ summary.UPG.Probit = function(object = NULL,            #estimation output
 #' data(lfp)
 #' y = lfp[,1]
 #' X = lfp[,-1]
-#' results.logit = UPG(y = y, X = X, type = "logit", verbose=TRUE)
+#' results.logit = UPG(y = y, X = X, model = "logit")
 #'
 #' # basic summary of regression results
 #' summary(results.logit)
@@ -190,10 +190,10 @@ summary.UPG.Logit  = function(object = NULL,            #estimation output
   if(length(names) != length(include)) stop("Number of provided variable names does not match number of included variables.")
 
   #get summary statistics
-  c.point  = apply(object$posterior$beta.post[,include,1,drop=F], 2, mean)
-  c.upper  = apply(object$posterior$beta.post[,include,1,drop=F], 2, quantile, q[2])
-  c.lower  = apply(object$posterior$beta.post[,include,1,drop=F], 2, quantile, q[1])
-  c.sd     = apply(object$posterior$beta.post[,include,1,drop=F], 2, sd)
+  c.point  = apply(object$posterior$beta[,include,drop=F], 2, mean)
+  c.upper  = apply(object$posterior$beta[,include,drop=F], 2, quantile, q[2])
+  c.lower  = apply(object$posterior$beta[,include,drop=F], 2, quantile, q[1])
+  c.sd     = apply(object$posterior$beta[,include,drop=F], 2, sd)
 
   #check which coefficients are "significant"
   c.sig = ifelse((c.upper > 0 & c.lower > 0) | (c.upper < 0 & c.lower < 0), "*", "")
@@ -243,12 +243,12 @@ summary.UPG.Logit  = function(object = NULL,            #estimation output
   # compute runtime, use in seconds or in minutes when > 5min
   runtime = object$runtime
   timecat = ifelse(runtime > 300,
-                   paste0(round(runtime / 60, 2), " CPU minutes."),
-                   paste0(round(runtime, 2), " CPU seconds."))
+                   paste0(round(runtime / 60, 2), " minutes."),
+                   paste0(round(runtime, 2), " seconds."))
 
   cat("\n\n--- Bayesian Logit Results --- \n\n")
   cat("N =", length(object$inputs$y),"\n")
-  cat("Analysis based on", object$inputs$nsave, "posterior draws after a burn-in period of", object$inputs$nburn, "iterations.\n")
+  cat("Analysis based on", object$inputs$draws, "posterior draws after\nan initial burn-in period of", object$inputs$burnin, "iterations.\n")
   cat("MCMC sampling took a total of",timecat,"\n")
 
 
@@ -263,24 +263,24 @@ summary.UPG.Logit  = function(object = NULL,            #estimation output
 #'
 #' @title Estimation results and tables for UPG.MNL objects
 #'
-#' @description \code{summary} generates a summary of estimation results for \code{UPG.MNL} objects. Point estimates, estimated standard deviation as well as credible intervals for each variable are tabulated. In addition, an indicator quickly shows whether the credible interval includes zero or not. In addition, LaTeX, HTML and pandoc tables can be quickly generated via \code{knitr}.
+#' @description \code{summary} generates a summary of estimation results for \code{UPG.MNL} objects. Point estimates, estimated standard deviation as well as credible intervals for each variable are tabulated. In addition, an indicator quickly shows whether the credible interval includes zero or not. Moreover, LaTeX, HTML and pandoc tables can be quickly generated via \code{knitr}.
 #'
 #' @param object an object of class \code{UPG.MNL}.
-#' @param q a numerical vector of length two holding the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.
+#' @param q a numerical vector of length two providing the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.
 #' @param names a character vector indicating names for the variables used in the output.
 #' @param groups  a character vector indicating names for the groups, excluding the baseline. The group names must correspond to the ordering in the dependent variable used for estimation.
 #' @param digits number of digits to be included in output. Last digit will be rounded using \code{round}.
-#' @param include can be used to summarize and tabulate only a subset of variables. Specificy the columns of X that should be kept in the plot. See examples for further information.
+#' @param include can be used to summarize and tabulate only a subset of variables. Specify the columns of X that should be kept in the plot. See examples for further information.
 #' @param table can be used to return a LaTeX table (\code{'latex'}), a Word table (\code{'pandoc'}) and HTML tables (\code{'html'}) via \code{knitr}. Include package "booktabs" in LaTeX preamble for LaTeX tables.
-#' @param cap character vector that can be used to specify the table caption is returned.
+#' @param cap character vector that can be used to specify the table caption.
 #' @param ... other summary parameters.
 #'
 #' @return Returns a \code{knitr_kable} object containing the summary table.
 #'
 #' @seealso
-#' \code{\link{plot.UPG.MNL}} to plot the results of a discrete choice model from an \code{UPG.MNL} object.
-#' \code{\link{predict.UPG.MNL}} to predict probabilities from a discrete choice model from an \code{UPG.MNL} object.
-#' \code{\link{coef.UPG.MNL}} to extract coefficients from an \code{UPG.MNL} object.
+#' \code{\link{plot.UPG.MNL}} to plot a \code{UPG.MNL} object.
+#' \code{\link{predict.UPG.MNL}} to predict probabilities using a \code{UPG.MNL} object.
+#' \code{\link{coef.UPG.MNL}} to extract coefficients from a \code{UPG.MNL} object.
 #'
 #' @author Gregor Zens
 #'
@@ -291,7 +291,7 @@ summary.UPG.Logit  = function(object = NULL,            #estimation output
 #' data(program)
 #' y = program[,1]
 #' X = program[,-1]
-#' results.mnl = UPG(y = y, X = X, type = "mnl")
+#' results.mnl = UPG(y = y, X = X, model = "mnl")
 #'
 #' # basic summary of regression results
 #' summary(results.mnl)
@@ -325,10 +325,10 @@ summary.UPG.MNL       = function(object = NULL,            #estimation output
   if(length(names) != length(include)) stop("Number of provided variable names does not match number of included variables.")
 
   #get summary statistics
-  c.point  = apply(object$posterior$beta.post[,include,,drop=F], c(2,3), mean)
-  c.upper  = apply(object$posterior$beta.post[,include,,drop=F], c(2,3), quantile, q[2])
-  c.lower  = apply(object$posterior$beta.post[,include,,drop=F], c(2,3), quantile, q[1])
-  c.sd     = apply(object$posterior$beta.post[,include,,drop=F], c(2,3), sd)
+  c.point  = apply(object$posterior$beta[,include,,drop=F], c(2,3), mean)
+  c.upper  = apply(object$posterior$beta[,include,,drop=F], c(2,3), quantile, q[2])
+  c.lower  = apply(object$posterior$beta[,include,,drop=F], c(2,3), quantile, q[1])
+  c.sd     = apply(object$posterior$beta[,include,,drop=F], c(2,3), sd)
 
   #check which coefficients are "significant"
   c.sig = ifelse((c.upper > 0 & c.lower > 0) | (c.upper < 0 & c.lower < 0), "*", "")
@@ -426,12 +426,12 @@ summary.UPG.MNL       = function(object = NULL,            #estimation output
   # compute runtime, use in seconds or in minutes when > 5min
   runtime = object$runtime
   timecat = ifelse(runtime > 300,
-                   paste0(round(runtime / 60, 2), " CPU minutes."),
-                   paste0(round(runtime, 2), " CPU seconds."))
+                   paste0(round(runtime / 60, 2), " minutes."),
+                   paste0(round(runtime, 2), " seconds."))
 
   cat("\n\n--- Bayesian Multinomial Logit Results --- \n\n")
   cat("N =", length(object$inputs$y),"\n")
-  cat("Analysis based on", object$inputs$nsave, "posterior draws after a burn-in period of", object$inputs$nburn, "iterations.\n")
+  cat("Analysis based on", object$inputs$draws, "posterior draws after\nan initial burn-in period of", object$inputs$burnin, "iterations.\n")
   cat("MCMC sampling took a total of",timecat,"\n")
   cat("\n")
   cat("Category", paste0("'",object$posterior$groups[length(object$posterior$groups)],"'"), "is the baseline category.\n")
@@ -449,23 +449,23 @@ summary.UPG.MNL       = function(object = NULL,            #estimation output
 #'
 #' @title Estimation results and tables for UPG.Binomial objects
 #'
-#' @description \code{summary} generates a summary of estimation results for \code{UPG.Binomial} objects. Point estimates, estimated standard deviation as well as credible intervals for each variable are tabulated. In addition, an indicator quickly shows whether the credible interval includes zero or not. In addition, LaTeX, HTML and pandoc tables can be quickly generated via \code{knitr}.
+#' @description \code{summary} generates a summary of estimation results for \code{UPG.Binomial} objects. Point estimates, estimated standard deviation as well as credible intervals for each variable are tabulated. In addition, an indicator quickly shows whether the credible interval includes zero or not. Moreover, LaTeX, HTML and pandoc tables can be quickly generated via \code{knitr}.
 #'
 #' @param object an object of class \code{UPG.Binomial}.
-#' @param q a numerical vector of length two holding the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.
+#' @param q a numerical vector of length two providing the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.
 #' @param names a character vector indicating names for the variables used in the output.
 #' @param digits number of digits to be included in output. Last digit will be rounded using \code{round}.
-#' @param include can be used to summarize and tabulate only a subset of variables. Specificy the columns of X that should be kept in the plot. See examples for further information.
+#' @param include can be used to summarize and tabulate only a subset of variables. Specify the columns of X that should be kept in the plot. See examples for further information.
 #' @param table can be used to return a LaTeX table (\code{'latex'}), a Word table (\code{'pandoc'}) and HTML tables (\code{'html'}) via \code{knitr}. Include package "booktabs" in LaTeX preamble for LaTeX tables.
-#' @param cap character vector that can be used to specify the table caption is returned.
+#' @param cap character vector that can be used to specify the table caption.
 #' @param ... other summary parameters.
 #'
 #' @return Returns a \code{knitr_kable} object containing the summary table.
 #'
 #' @seealso
-#' \code{\link{plot.UPG.Binomial}} to plot the results of a discrete choice model from an \code{UPG.Binomial} object.
-#' \code{\link{predict.UPG.Binomial}} to predict probabilities from a discrete choice model from an \code{UPG.Binomial} object.
-#' \code{\link{coef.UPG.Binomial}} to extract coefficients from an \code{UPG.Binomial} object.
+#' \code{\link{plot.UPG.Binomial}} to plot a \code{UPG.Binomial} object.
+#' \code{\link{predict.UPG.Binomial}} to predict probabilities using a \code{UPG.Binomial} object.
+#' \code{\link{coef.UPG.Binomial}} to extract coefficients from a \code{UPG.Binomial} object.
 #'
 #' @author Gregor Zens
 #'
@@ -477,7 +477,7 @@ summary.UPG.MNL       = function(object = NULL,            #estimation output
 #' y  = titanic[,1]
 #' Ni = titanic[,2]
 #' X  = titanic[,-c(1,2)]
-#' results.binomial = UPG(y = y, X = X, Ni = Ni, type = "binomial")
+#' results.binomial = UPG(y = y, X = X, Ni = Ni, model = "binomial")
 #'
 #' # basic summary of regression results
 #' summary(results.binomial)
@@ -490,7 +490,7 @@ summary.UPG.MNL       = function(object = NULL,            #estimation output
 #'}
 #' @method  summary UPG.Binomial
 #'
-#'@export
+#' @export
 summary.UPG.Binomial  = function(object = NULL,            #estimation output
                                  ...,
                                  q      = c(0.025, 0.975), #quantiles for credible interval
@@ -509,10 +509,10 @@ summary.UPG.Binomial  = function(object = NULL,            #estimation output
   if(length(names) != length(include)) stop("Number of provided variable names does not match number of included variables.")
 
   #get summary statistics
-  c.point  = apply(object$posterior$beta.post[,include,1,drop=F], 2, mean)
-  c.upper  = apply(object$posterior$beta.post[,include,1,drop=F], 2, quantile, q[2])
-  c.lower  = apply(object$posterior$beta.post[,include,1,drop=F], 2, quantile, q[1])
-  c.sd     = apply(object$posterior$beta.post[,include,1,drop=F], 2, sd)
+  c.point  = apply(object$posterior$beta[,include,drop=F], 2, mean)
+  c.upper  = apply(object$posterior$beta[,include,drop=F], 2, quantile, q[2])
+  c.lower  = apply(object$posterior$beta[,include,drop=F], 2, quantile, q[1])
+  c.sd     = apply(object$posterior$beta[,include,drop=F], 2, sd)
 
   #check which coefficients are "significant"
   c.sig = ifelse((c.upper > 0 & c.lower > 0) | (c.upper < 0 & c.lower < 0), "*", "")
@@ -562,12 +562,12 @@ summary.UPG.Binomial  = function(object = NULL,            #estimation output
   # compute runtime, use in seconds or in minutes when > 5min
   runtime = object$runtime
   timecat = ifelse(runtime > 300,
-                   paste0(round(runtime / 60, 2), " CPU minutes."),
-                   paste0(round(runtime, 2), " CPU seconds."))
+                   paste0(round(runtime / 60, 2), " minutes."),
+                   paste0(round(runtime, 2), " seconds."))
 
   cat("\n\n--- Bayesian Binomial Logit Results --- \n\n")
   cat("N =", length(object$inputs$y),"\n")
-  cat("Analysis based on", object$inputs$nsave, "posterior draws after a burn-in period of", object$inputs$nburn, "iterations.\n")
+  cat("Analysis based on", object$inputs$draws, "posterior draws after\nan initial burn-in period of", object$inputs$burnin, "iterations.\n")
   cat("MCMC sampling took a total of",timecat,"\n")
 
   return(result)

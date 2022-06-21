@@ -8,14 +8,14 @@
 A data frame with 200 rows and 5 variables:
 \describe{
   \item{program}{a vector of program choices}
-  \item{intercept}{an intercept}
-  \item{female}{dummy for female students}
+  \item{intercept}{an intercept term}
+  \item{female}{binary indicator for female students}
   \item{ses}{socioeconomic status, 1 is lowest}
   \item{write}{writing score of student}
 }
 }
 \source{
-Original dataset is known as 'hsbdemo' and has been sourced from \url{https://stats.idre.ucla.edu/stat/data/hsbdemo.dta}.
+Original dataset is known as 'hsbdemo' and has been sourced from \url{https://stats.oarc.ucla.edu/stat/data/hsbdemo.dta}.
 }
 \usage{
 program

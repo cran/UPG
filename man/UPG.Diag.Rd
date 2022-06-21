@@ -10,7 +10,7 @@ UPG.Diag(object = NULL)
 \item{object}{an object of class \code{UPG.Probit}, \code{UPG.Logit}, \code{UPG.MNL} or \code{UPG.Binomial}.}
 }
 \value{
-Returns a list containing effective sample size, effective sampling rate and inefficiency factors for each coefficient. Specifically, maximum, minimum and median as well as detailed results for each coefficient are returned.
+Returns a list containing effective sample size, effective sampling rate and inefficiency factors for each coefficient. In addition, maximum, minimum and median of these measures are returned.
 }
 \description{
 \code{UPG.Diag} computes a number of MCMC diagnostics based on the Markov chains that are contained in the model output returned by \code{UPG}.
@@ -22,7 +22,7 @@ library(UPG)
 data(lfp)
 y = lfp[,1]
 X = lfp[,-1]
-results.probit = UPG(y = y, X = X, type = "probit", verbose=TRUE)
+results.probit = UPG(y = y, X = X, model = "probit")
 
 # compute MCMC diagnostics
 UPG.Diag(results.probit)

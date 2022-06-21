@@ -6,7 +6,7 @@
 #'
 #' @param object an object of class \code{UPG.Probit}, \code{UPG.Logit}, \code{UPG.MNL} or \code{UPG.Binomial}.
 #'
-#' @return Returns a list containing effective sample size, effective sampling rate and inefficiency factors for each coefficient. Specifically, maximum, minimum and median as well as detailed results for each coefficient are returned.
+#' @return Returns a list containing effective sample size, effective sampling rate and inefficiency factors for each coefficient. In addition, maximum, minimum and median of these measures are returned.
 #'
 #' @author Gregor Zens
 #'
@@ -17,7 +17,7 @@
 #' data(lfp)
 #' y = lfp[,1]
 #' X = lfp[,-1]
-#' results.probit = UPG(y = y, X = X, type = "probit", verbose=TRUE)
+#' results.probit = UPG(y = y, X = X, model = "probit")
 #'
 #' # compute MCMC diagnostics
 #' UPG.Diag(results.probit)
@@ -35,25 +35,25 @@ UPG.Diag           = function(object   = NULL    # estimated UPG object
   }
 
 
-  if(object$inputs$type == "probit"){
+  if(object$inputs$model == "probit"){
 
     diagnostics = UPG.Diag.Probit(object)
 
   }
 
-  if(object$inputs$type == "logit"){
+  if(object$inputs$model == "logit"){
 
     diagnostics = UPG.Diag.Logit(object)
 
   }
 
-  if(object$inputs$type == "mnl"){
+  if(object$inputs$model == "mnl"){
 
     diagnostics = UPG.Diag.MNL(object)
 
   }
 
-  if(object$inputs$type == "binomial"){
+  if(object$inputs$model == "binomial"){
 
     diagnostics = UPG.Diag.Binomial(object)
 
@@ -68,7 +68,7 @@ UPG.Diag           = function(object   = NULL    # estimated UPG object
 #'
 #' @title MCMC Diagnostics for UPG.Probit objects
 #'
-#' @description \code{UPG.Diag.Probit} computes inefficiency factors, effective sample size and effective sampling rate based on the posterior distributions in an \code{UPG.Probit} object.
+#' @description \code{UPG.Diag.Probit} computes inefficiency factors, effective sample size and effective sampling rate based on the posterior distributions in a \code{UPG.Probit} object.
 #'
 #' @param object an object of class \code{UPG.Probit}.
 #'
@@ -80,12 +80,12 @@ UPG.Diag.Probit = function(object   = NULL    # estimated UPG object
                           ){
 
   # general info
-  nsave = object$inputs$nsave
+  nsave = object$inputs$draws
   time  = object$runtime
   names = colnames(object$inputs$X)
 
   # ess, esr, ie
-  ess   = coda::effectiveSize(coda::mcmc(object$posterior$beta.post[,,1]))
+  ess   = coda::effectiveSize(coda::mcmc(object$posterior$beta))
   esr   = ess   / time
   ie    = nsave / ess
 
@@ -135,7 +135,7 @@ UPG.Diag.Probit = function(object   = NULL    # estimated UPG object
 #'
 #' @title MCMC Diagnostics for \code{UPG.Logit} objects
 #'
-#' @description \code{UPG.Diag.Logit} computes inefficiency factors, effective sample size and effective sampling rate based on the posterior distributions in an \code{UPG.Logit} object.
+#' @description \code{UPG.Diag.Logit} computes inefficiency factors, effective sample size and effective sampling rate based on the posterior distributions in a \code{UPG.Logit} object.
 #'
 #' @param object an object of class \code{UPG.Logit}.
 #'
@@ -147,12 +147,12 @@ UPG.Diag.Logit = function(object   = NULL    # estimated UPG object
                           ){
 
   # general info
-  nsave = object$inputs$nsave
+  nsave = object$inputs$draws
   time  = object$runtime
   names = colnames(object$inputs$X)
 
   # ess, esr, ie
-  ess   = coda::effectiveSize(coda::mcmc(object$posterior$beta.post[,,1]))
+  ess   = coda::effectiveSize(coda::mcmc(object$posterior$beta))
   esr   = ess   / time
   ie    = nsave / ess
 
@@ -204,7 +204,7 @@ UPG.Diag.Logit = function(object   = NULL    # estimated UPG object
 #'
 #' @title MCMC Diagnostics for \code{UPG.Binomial} objects
 #'
-#' @description \code{UPG.Diag.Binomial} computes inefficiency factors, effective sample size and effective sampling rate based on the posterior distributions in an \code{UPG.Binomial} object.
+#' @description \code{UPG.Diag.Binomial} computes inefficiency factors, effective sample size and effective sampling rate based on the posterior distributions in a \code{UPG.Binomial} object.
 #'
 #' @param object an object of class \code{UPG.Binomial}.
 #'
@@ -216,12 +216,12 @@ UPG.Diag.Binomial = function(object   = NULL    # estimated UPG object
                              ){
 
   # general info
-  nsave = object$inputs$nsave
+  nsave = object$inputs$draws
   time  = object$runtime
   names = colnames(object$inputs$X)
 
   # ess, esr, ie
-  ess   = coda::effectiveSize(coda::mcmc(object$posterior$beta.post[,,1]))
+  ess   = coda::effectiveSize(coda::mcmc(object$posterior$beta))
   esr   = ess   / time
   ie    = nsave / ess
 
@@ -272,7 +272,7 @@ UPG.Diag.Binomial = function(object   = NULL    # estimated UPG object
 #'
 #' @title MCMC Diagnostics for \code{UPG.MNL} objects
 #'
-#' @description \code{UPG.Diag.MNL} computes inefficiency factors, effective sample size and effective sampling rate based on the posterior distributions in an \code{UPG.MNL} object.
+#' @description \code{UPG.Diag.MNL} computes inefficiency factors, effective sample size and effective sampling rate based on the posterior distributions in a \code{UPG.MNL} object.
 #'
 #' @param object an object of class \code{UPG.MNL}.
 #'
@@ -284,14 +284,14 @@ UPG.Diag.MNL = function(object   = NULL    # estimated UPG object
                         ){
 
   # general info
-  nsave = object$inputs$nsave
+  nsave = object$inputs$draws
   time  = object$runtime
   names = colnames(object$inputs$X)
   K     = length(unique(object$inputs$y))
 
   # ess, esr, ie
   ess   = sapply(1:(K-1), function(kk)
-                 coda::effectiveSize(coda::mcmc(object$posterior$beta.post[,,kk])))
+                 coda::effectiveSize(coda::mcmc(object$posterior$beta[,,kk])))
 
   esr   = ess   / time
   ie    = nsave / ess

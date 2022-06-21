@@ -13,13 +13,13 @@
 
 \item{newdata}{a matrix or a \code{data.frame} containing new explanatory data. The number of columns and the variable ordering must be the same as in the explanatory data used for estimation to generate valid predictions. If no new data is provided, \code{predict} will return predicted probabilities for the data used for estimating the model.}
 
-\item{q}{a numerical vector of length two holding the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.}
+\item{q}{a numerical vector of length two providing the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.}
 }
 \value{
 Returns a list containing posterior means of predicted probabilities as well as the desired credible interval.
 }
 \description{
-\code{predict} generates predicted probabilities from estimated discrete choice models in an \code{UPG.MNL} object. In addition, credible intervals for these probabilities are computed. Probabilities can be predicted from the data used for estimating the model or for a new data set with the same structure.
+\code{predict} generates predicted probabilities from a \code{UPG.MNL} object. In addition, credible intervals for these probabilities are computed. Probabilities can be predicted from the data used for estimating the model or for a new data set with the same structure.
 }
 \examples{
 \donttest{
@@ -28,16 +28,16 @@ library(UPG)
 data(program)
 y = program[,1]
 X = program[,-1]
-results.mnl = UPG(y = y, X = X, type = "mnl")
+results.mnl = UPG(y = y, X = X, model = "mnl")
 
 # extract predicted probabilities
 predict(results.mnl)
 }
 }
 \seealso{
-\code{\link{summary.UPG.MNL}} to summarize the estimates of a discrete choice model from an \code{UPG.MNL} object and create tables.
-\code{\link{plot.UPG.MNL}} to plot the results of a discrete choice model from an \code{UPG.Logit} object.
-\code{\link{coef.UPG.MNL}} to extract coefficients from an \code{UPG.MNL} object.
+\code{\link{summary.UPG.MNL}} to summarize a \code{UPG.MNL} object and create tables.
+\code{\link{plot.UPG.MNL}} to plot a \code{UPG.MNL} object.
+\code{\link{coef.UPG.MNL}} to extract coefficients from a \code{UPG.MNL} object.
 }
 \author{
 Gregor Zens

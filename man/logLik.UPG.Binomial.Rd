@@ -12,10 +12,10 @@
 \item{...}{other logLik parameters.}
 }
 \value{
-Returns a numeric of class \code{logLik} with attributes containing the number of estimated parameters and the number of observations. Note that the number of observations in binomial models is equal to Ni and not equal to the sample size.
+Returns a numeric of class \code{logLik} with attributes containing the number of estimated parameters and the number of observations.
 }
 \description{
-\code{logLik} can be used to compute log-likelihoods from \code{UPG.Binomial} objects. The log-likelihood is based on the posterior mean of the coefficients and can be used for model selection when combined with,e.g., \code{BIC} or other model selection criteria.
+\code{logLik} can be used to compute log-likelihoods from \code{UPG.Binomial} objects. The log-likelihood is based on the posterior mean of the coefficients.
 }
 \examples{
 \donttest{
@@ -25,19 +25,17 @@ data(titanic)
 y  = titanic[,1]
 Ni = titanic[,2]
 X  = titanic[,-c(1,2)]
-results.binomial = UPG(y = y, X = X, Ni = Ni, type = "binomial")
+results.binomial = UPG(y = y, X = X, Ni = Ni, model = "binomial")
 
 # extract log-likelihood
 ll.binomial = logLik(results.binomial)
 
-# compute BIC
-BIC(ll.binomial)
 }
 }
 \seealso{
-\code{\link{summary.UPG.Binomial}} to summarize the estimates of a discrete choice model from an \code{UPG.Binomial} object and create tables.
-\code{\link{plot.UPG.Binomial}} to plot the results of a discrete choice model from an \code{UPG.Binomial} object.
-\code{\link{coef.UPG.Binomial}} to extract coefficients from an \code{UPG.Binomial} object.
+\code{\link{summary.UPG.Binomial}} to summarize a \code{UPG.Binomial} object and create tables.
+\code{\link{plot.UPG.Binomial}} to plot a \code{UPG.Binomial} object.
+\code{\link{coef.UPG.Binomial}} to extract coefficients from a \code{UPG.Binomial} object.
 }
 \author{
 Gregor Zens

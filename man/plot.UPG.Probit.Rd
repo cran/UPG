@@ -28,9 +28,9 @@
 
 \item{ylab}{a character vector of length 1 indicating a title for the y-axis.}
 
-\item{q}{a numerical vector of length two holding the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.}
+\item{q}{a numerical vector of length two providing the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.}
 
-\item{include}{can be used to plot only a subset of variables. Specificy the columns of X that should be kept in the plot. See examples for further information.}
+\item{include}{can be used to plot only a subset of variables. Specify the columns of X that should be kept in the plot. See examples for further information.}
 }
 \value{
 Returns a ggplot2 object.
@@ -45,7 +45,7 @@ library(UPG)
 data(lfp)
 y = lfp[,1]
 X = lfp[,-1]
-results.probit = UPG(y = y, X = X, type = "probit", verbose=TRUE)
+results.probit = UPG(y = y, X = X, model = "probit")
 
 # plot the results and sort coefficients by effect size
 plot(results.probit, sort = TRUE)
@@ -60,9 +60,9 @@ plot(results.probit,
 }
 }
 \seealso{
-\code{\link{summary.UPG.Probit}} to summarize the estimates of a discrete choice model from an \code{UPG.Probit} object and create tables.
-\code{\link{predict.UPG.Probit}} to predict probabilities from a discrete choice model from an \code{UPG.Probit} object.
-\code{\link{coef.UPG.Probit}} to extract coefficients from an \code{UPG.Probit} object.
+\code{\link{summary.UPG.Probit}} to summarize a \code{UPG.Probit} object and create tables.
+\code{\link{predict.UPG.Probit}} to predict probabilities using a \code{UPG.Probit} object.
+\code{\link{coef.UPG.Probit}} to extract coefficients from a \code{UPG.Probit} object.
 }
 \author{
 Gregor Zens

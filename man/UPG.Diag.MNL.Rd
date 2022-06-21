@@ -13,7 +13,7 @@ UPG.Diag.MNL(object = NULL)
 Returns a list containing effective sample size, effective sampling rate and inefficiency factors for each coefficient.
 }
 \description{
-\code{UPG.Diag.MNL} computes inefficiency factors, effective sample size and effective sampling rate based on the posterior distributions in an \code{UPG.MNL} object.
+\code{UPG.Diag.MNL} computes inefficiency factors, effective sample size and effective sampling rate based on the posterior distributions in a \code{UPG.MNL} object.
 }
 \author{
 Gregor Zens

@@ -1,46 +1,50 @@
 #' @name UPG
 #'
-#' @title Gibbs Sampling for Bayesian discrete choice models
+#' @title Efficient MCMC Samplers for Bayesian probit regression and various logistic regression models
 #'
-#' @description \code{UPG} estimates Bayesian discrete choice models and returns the full posterior distribution for all parameters that can be used for further analysis and inference.
+#' @description \code{UPG} estimates Bayesian regression models for binary or categorical outcomes using samplers based on marginal data augmentation.
 #'
 #' @usage
 #' UPG(y,
 #'     X,
-#'     type,
-#'     Ni         = NULL,
-#'     baseline   = NULL,
-#'     draws      = 1000,
-#'     burnin     = 1000,
-#'     A0         = 1,
-#'     d0         = 0.5,
-#'     D0         = 0.5,
-#'     G0         = 99,
-#'     verbose    = TRUE,
-#'     BOOST      = TRUE,
-#'     beta.start = NULL)
+#'     model,
+#'     Ni          = NULL,
+#'     baseline    = NULL,
+#'     draws       = 1000,
+#'     burnin      = 1000,
+#'     A0          = 4,
+#'     B0          = 4,
+#'     d0          = 2.5,
+#'     D0          = 1.5,
+#'     G0          = 100,
+#'     verbose     = TRUE,
+#'     gamma.boost = TRUE,
+#'     delta.boost = TRUE,
+#'     beta.start  = NULL)
 #'
-#' @param y a binary vector for probit and logit models. A character, factor or numeric vector for multinomial logit models. A vector of the number of successes for the binomial model.
+#' @param y a binary vector for probit and logit models. A character, factor or numeric vector for multinomial logit models. A numerical vector of the number of successes for the binomial model.
 #' @param X a matrix of explanatory variables including an intercept in the first column. Rows are individuals, columns are variables.
-#' @param type indicates the model to be estimated. \code{'probit'} for the probit model, \code{'logit'} for the logit model, \code{'mnl'} for the multinomial logit model or \code{'binomial'} for the binomial logit model.
+#' @param model indicates the model to be estimated. \code{'probit'} for the probit model, \code{'logit'} for the logit model, \code{'mnl'} for the multinomial logit model or \code{'binomial'} for the binomial logit model.
 #' @param Ni a vector containing the number of trials when estimating a binomial logit model.
-#' @param baseline a string that can be used to change the baseline category in MNL models. Default baseline is the most common category.
-#' @param draws number of saved Gibbs sampler iterations. Default is 1000 for illustration purposes, you should use more when estimating a model (e.g. 10,000)!
-#' @param burnin number of burned Gibbs sampler iterations. Default is 1000 for illustration purposes, you should probably use more when estimating a model (e.g. 2,000)!
-#' @param A0 prior variance for coefficients, 1 is the default.
-#' @param d0 prior shape for working parameter delta, 0.5 is the default.
-#' @param D0 prior rate for working parameter delta,  0.5 is the default.
-#' @param G0 prior variance for the intercept, 99 is the default.
-#' @param verbose logical variable indicating whether model output and progress should be printed during estimation.
-#' @param BOOST logical variable indicating whether MCMC boosting should be used.
-#' @param beta.start provide starting values for beta (e.g. for use within Gibbs sampler)
+#' @param baseline a string that can be used to change the baseline category in MNL models. Default baseline is the most commonly observed category.
+#' @param draws number of saved Gibbs sampler iterations. Default is 1000 for illustration purposes, you should use more when estimating a model (e.g. 10,000).
+#' @param burnin number of burned Gibbs sampler iterations. Default is 1000 for illustration purposes, you should use more when estimating a model (e.g. 2,000).
+#' @param A0 prior variance for the intercept, 4 is the default.
+#' @param B0 prior variance for the coefficients, 4 is the default.
+#' @param d0 prior shape for working parameter delta, 2.5 is the default.
+#' @param D0 prior rate for working parameter delta,  1.5 is the default.
+#' @param G0 prior variance for working parameter gamma, 100 is the default.
+#' @param verbose logical variable indicating whether progress should be printed during estimation.
+#' @param gamma.boost logical variable indicating whether location-based parameter expansion boosting should be used.
+#' @param delta.boost logical variable indicating whether scale-based parameter expansion boosting should be used.
+#' @param beta.start provides starting values for beta (e.g. for use within Gibbs sampler)
 #'
-#' @return Depending on the type of the model, \code{UPG()} returns an \code{UPG.Probit}, \code{UPG.Logit}, \code{UPG.MNL} or \code{UPG.Binomial} object.
+#' @return Depending on the estimated model, \code{UPG()} returns a \code{UPG.Probit}, \code{UPG.Logit}, \code{UPG.MNL} or \code{UPG.Binomial} object.
 #'
 #' @seealso
-#' \code{\link{summary.UPG.Probit}} to summarize the estimates of a discrete choice model from an \code{UPG.Probit} object and to create tables.
-#' \code{\link{predict.UPG.Logit}} to predict probabilities from a discrete choice model from an \code{UPG.Logit} object.
-#' \code{\link{plot.UPG.MNL}} to plot the results of a discrete choice model from an \code{UPG.MNL} object.
+#' \code{\link{summary.UPG.Probit}} to summarize a \code{UPG.Probit} object and to create tables.
+#' \code{\link{predict.UPG.Logit}} to predict probabilities using a \code{UPG.Logit} object.
+#' \code{\link{plot.UPG.MNL}} to plot a \code{UPG.MNL} object.
 #'
 #' @author Gregor Zens
 #'
@@ -50,39 +54,37 @@
 #' library(UPG)
 #'
 #' # estimate a probit model using example data
-#' # warning: use more burn-ins, burnin = 100 is just for demonstration purposes
+#' # warning: use more burn-ins, burnin = 100 is just used for demonstration purposes
 #' data(lfp)
 #' y = lfp[,1]
 #' X = lfp[,-1]
-#' results.probit = UPG(y = y, X = X, type = "probit", verbose=TRUE, burnin = 100)
+#' results.probit = UPG(y = y, X = X, model = "probit", burnin = 100)
 #'
 #' # estimate a logit model using example data
-#' # warning: use more burn-ins, burnin = 100 is just for demonstration purposes
+#' # warning: use more burn-ins, burnin = 100 is just used for demonstration purposes
 #' data(lfp)
 #' y = lfp[,1]
 #' X = lfp[,-1]
-#' results.logit = UPG(y = y, X = X, type = "logit", verbose=TRUE, burnin = 100)
+#' results.logit = UPG(y = y, X = X, model = "logit", burnin = 100)
 #'
 #' # estimate a MNL model using example data
-#' # warning: use more burn-ins, burnin = 100 is just for demonstration purposes
+#' # warning: use more burn-ins, burnin = 100 is just used for demonstration purposes
 #' data(program)
 #' y = program[,1]
 #' X = program[,-1]
-#' results.mnl = UPG(y = y, X = X, type = "mnl", burnin = 100)
+#' results.mnl = UPG(y = y, X = X, model = "mnl", burnin = 100)
 #'
 #' # estimate a binomial logit model using example data
-#' # warning: use more burn-ins, burnin = 100 is just for demonstration purposes
+#' # warning: use more burn-ins, burnin = 100 is just used for demonstration purposes
 #' data(titanic)
 #' y  = titanic[,1]
 #' Ni = titanic[,2]
 #' X  = titanic[,-c(1,2)]
-#' results.binomial = UPG(y = y, X = X, Ni = Ni, type = "binomial", burnin = 100)
+#' results.binomial = UPG(y = y, X = X, Ni = Ni, model = "binomial", burnin = 100)
 #'
-#' @useDynLib UPG, .registration=TRUE
 #' @import ggplot2
 #' @import knitr
 #' @import stats
-#' @import Rcpp
 #' @import pgdraw
 #' @import mnormt
 #' @import matrixStats
@@ -90,30 +92,31 @@
 #' @importFrom utils flush.console setTxtProgressBar txtProgressBar
 #'
 #'@export
-UPG = function(y,                    #dependent   variable
-               X,                    #explanatory matrix
-               type,                 #which model to estimate
-               Ni         = NULL,    #number of trials (binomial only)
-               baseline   = NULL,    #baseline for MNL case
-               draws      = 1000,    #number of saved draws
-               burnin     = 1000,    #number of burned draws
-               A0         = 1,       #prior variance on coefficients
-               d0         = 0.5,     #prior scale of delta
-               D0         = 0.5,     #prior rate  of delta
-               G0         = 99,      #prior variance on interecept in unidentified model
-               verbose    = TRUE,    #show progress bar + notifications
-               BOOST      = TRUE,    #use boosting y/n
-               beta.start = NULL     #provide starting values for beta (for use in Gibbs sampler)
+UPG = function(y,                     # dependent variable
+               X,                     # design matrix
+               model,                 # which model to estimate
+               Ni          = NULL,    # number of trials (binomial only)
+               baseline    = NULL,    # baseline category for MNL models
+               draws       = 1000,    # number of saved draws
+               burnin      = 1000,    # number of burn-in iterations
+               A0          = 4,       # prior variance on intercepts
+               B0          = 4,       # prior variance on remaining coefficients
+               d0          = 2.5,     # prior scale of delta
+               D0          = 1.5,     # prior rate  of delta
+               G0          = 100,     # prior variance on gamma
+               verbose     = TRUE,    # show progress bar
+               gamma.boost = TRUE,    # use location-based expansion
+               delta.boost = TRUE,    # use scale-based expansion
+               beta.start  = NULL     # provide starting values for beta (for use in Gibbs sampler)
 ){
 
   if(verbose)          cat("Checking data & inputs ... \n")
 
-  if(missing(y))       stop("Please provide a vector of dependent data y.")
-  if(missing(X))       stop("Please provide an explanatory matrix X.")
-  if(missing(type))    stop("Please provide the model you want to estimate using 'type'.")
+  if(missing(y))        stop("Please provide a vector of dependent data y.")
+  if(missing(X))        stop("Please provide a design matrix X.")
+  if(missing(model))    stop("Please provide the model you want to estimate using the 'model' argument.")
 
-
-  if(!(type %in% c("probit","logit","mnl","binomial"))) stop("'type' must be either 'probit', 'logit', 'mnl' or 'binomial'.")
+  if(!(model %in% c("probit","logit","mnl","binomial"))) stop("'model' must be either 'probit', 'logit', 'mnl' or 'binomial'.")
 
   y = as.matrix(y, ncol=1)
   X = as.matrix(X, nrow=nrow(y))
@@ -121,16 +124,17 @@ UPG = function(y,                    #dependent   variable
   nsave = draws
   nburn = burnin
 
+  # capture duplicated (and empty colnames)
+  if(any(duplicated(colnames(X)))){stop("Please provide a design matrix X with unique column names.")}
+
   if(!is.null(beta.start)){beta.start = as.matrix(beta.start)}
 
   if(ncol(y)!=1)                       stop("y must be a vector.")
   if(!is.numeric(X))                   stop("Please provide X as numeric matrix.")
   if(is.null(X))                       stop("A design matrix X must be provided.")
   if(any(is.na(y), is.na(X)))          stop("Data contains NA values.")
-  if(qr(X)$rank < ncol(X))             stop("X does not have full rank. Maybe some covariates are  perfectly collinear?")
   if(nrow(y) != nrow(X))               stop("y and X do not have the same number of rows.")
-  if(BOOST==T & sum(X[,1]) != nrow(X)) stop("When boosting is active, the first column of X must be an intercept.")
-  if(BOOST==F & sum(X[,1]) != nrow(X)) warning("You're estimating the model without intercept, are you sure you want to do that?")
+  if(sum(X[,1]) != nrow(X))            stop("The first column of X must be an intercept.")
 
   if(is.null(nburn))                   stop("Please provide the number of burn-ins using 'burnin'.")
   if(is.null(nsave))                   stop("Please provide the number of draws to be saved using 'draws'.")
@@ -148,7 +152,7 @@ UPG = function(y,                    #dependent   variable
 
   if(verbose) cat("Initializing Gibbs Sampler ... \n")
 
-  if(type == "probit"){
+  if(model == "probit"){
 
     if(!is.numeric(y))                   stop("Please provide y as numeric vector.")
 
@@ -161,28 +165,25 @@ UPG = function(y,                    #dependent   variable
 
     if(verbose) cat("Simulating from posterior distribution ... \n")
     start.time = Sys.time()
-    results = upg.probit(y = y,
-                         X = X,
-                         nsave = nsave,
-                         nburn = nburn,
-                         A0 = A0,
-                         d0 = d0,
-                         D0 = D0,
-                         G0 = G0,
-                         BOOST = BOOST,
-                         verbose = verbose,
-                         beta.old = beta.start)
+    results    = upg.probit(y = y,
+                            X = X,
+                            nsave       = nsave,
+                            nburn       = nburn,
+                            d0          = d0,
+                            D0          = D0,
+                            G0          = G0,
+                            B0          = B0,
+                            A0          = A0,
+                            gamma.boost = gamma.boost,
+                            delta.boost = delta.boost,
+                            beta.start  = beta.start,
+                            verbose     = verbose)
     end.time   = Sys.time()
-    output = list(beta.post   = results$beta
-                  #delta.post  = results$delta,
-                  #gamma.post  = results$gamma,
-                  #latent.post = results$y.latent
-                  )
-
+    output = list(beta   = results$beta)
 
     }
 
-  if(type == "logit"){
+  if(model == "logit"){
 
     if(!is.numeric(y))                   stop("Please provide y as numeric vector.")
 
@@ -201,25 +202,23 @@ UPG = function(y,                    #dependent   variable
                          X = X,
                          nsave = nsave,
                          nburn = nburn,
-                         A0 = A0,
                          d0 = d0,
                          D0 = D0,
                          G0 = G0,
-                         BOOST = BOOST,
-                         verbose = verbose,
-                         beta.old = beta.start)
+                         B0 = B0,
+                         A0 = A0,
+                         gamma.boost = gamma.boost,
+                         delta.boost = delta.boost,
+                         beta.start  = beta.start,
+                         verbose = verbose)
     end.time = Sys.time()
 
 
-    output = list(beta.post   = results$beta
-                  #delta.post  = results$delta,
-                  #gamma.post  = results$gamma,
-                  #latent.post = results$y.latent
-                  )
+    output = list(beta   = results$beta)
 
   }
 
-  if(type == "mnl"){
+  if(model == "mnl"){
 
     if(length(unique(y)) == 2) warning("You have provided a binary outcome vector for a multinomial logit model. Are you sure that this is what you want?")
 
@@ -259,14 +258,14 @@ UPG = function(y,                    #dependent   variable
     # transform to numeric categorical vector
     y.mnl = as.numeric(y.mnl)
     y.mnl = as.matrix(y.mnl)
-
+    y.mnl = model.matrix(~as.factor(y.mnl) - 1)
 
 
 
     if(verbose) cat("Simulating from posterior distribution ... \n")
 
     start.time = Sys.time()
-    results = upg.mnl(   y        = y.mnl,
+    results = upg.mnl(   y.matrix = y.mnl,
                          X        = X,
                          nsave    = nsave,
                          nburn    = nburn,
@@ -274,32 +273,26 @@ UPG = function(y,                    #dependent   variable
                          d0       = d0,
                          D0       = D0,
                          G0       = G0,
-                         BOOST    = BOOST,
+                         B0       = B0,
+                         gamma.boost = gamma.boost,
+                         delta.boost = delta.boost,
                          verbose  = verbose,
-                         beta.old = beta.start)
+                         beta.start = beta.start)
     end.time  = Sys.time()
 
 
-    output = list(beta.post   = results$beta,
-                  groups      = groups
-                  #delta.post  = results$delta,
-                  #gamma.post  = results$gamma,
-                  #latent.post = results$y.latent
-                  )
+    output = list(beta   = results$beta,
+                  groups      = groups)
 
   }
 
-  if(type == "binomial"){
-
-    prior.ig = FALSE
-
+  if(model == "binomial"){
 
     if(!is.numeric(y))                   stop("Please provide y as numeric vector.")
 
     if(length(unique(y)) == 2) warning("You have provided a binary outcome vector for a binomial logit model. Are you sure that this is what you want?")
     if(is.null(Ni)) stop("The binomial logit model requires a separate vector containing the number of trials for each outcome.")
     if(is.null(Ni)) stop("The binomial logit model requires a separate vector containing the number of trials for each outcome.")
-    if(is.null(prior.ig)) stop("Please indicate which prior you want to use when sampling delta in the binomial logit model. Default is prior.ig = F.")
     if(any(Ni<y)) stop("Your data contains at least one case where the number of successes exceeds the number of trials.")
     Ni = as.matrix(Ni,ncol=1)
     if(nrow(y) != nrow(Ni))               stop("y and Ni do not have the same number of rows.")
@@ -321,41 +314,40 @@ UPG = function(y,                    #dependent   variable
                          d0       = d0,
                          D0       = D0,
                          G0       = G0,
-                         BOOST    = BOOST,
+                         B0       = B0,
+                         gamma.boost = gamma.boost,
+                         delta.boost = delta.boost,
                          verbose  = verbose,
-                         beta.old = beta.start,
-                         prior.ig = prior.ig,
+                         beta.start = beta.start,
                          Ni       = Ni)
     end.time = Sys.time()
 
 
-    output = list(beta.post   = results$beta
-                  #delta.post  = results$delta,
-                  #gamma.post  = results$gamma,
-                  #wi.post     = results$w.i,
-                  #vi.post     = results$v.i
-                  )
+    output = list(beta = results$beta)
 
   }
 
-  if(verbose) cat("Sampling succesful!\n")
+  if(verbose) cat("\nSampling succesful!\n")
 
 
   #create output file
 
-  input = list(y          = y,
-               X          = X,
-               type       = type,
-               Ni         = Ni,
-               nsave      = nsave,
-               nburn      = nburn,
-               A0         = A0,
-               d0         = d0,
-               D0         = D0,
-               G0         = G0,
-               verbose    = verbose,
-               BOOST      = BOOST,
-               beta.start = beta.start)
+  input = list(y           = y,
+               X           = X,
+               model       = model,
+               Ni          = Ni,
+               baseline    = baseline,
+               draws       = draws,
+               burnin      = burnin,
+               A0          = A0,
+               B0          = B0,
+               d0          = d0,
+               D0          = D0,
+               G0          = G0,
+               verbose     = verbose,
+               gamma.boost = gamma.boost,
+               delta.boost = delta.boost,
+               beta.start  = beta.start)
 
 
 
@@ -363,8 +355,8 @@ UPG = function(y,                    #dependent   variable
   # measure runtime of sampler
   runtime = as.numeric(difftime(end.time, start.time, units = "secs"))
   timecat = ifelse(runtime > 300,
-                   paste0(round(runtime / 60, 2), " CPU minutes."),
-                   paste0(round(runtime, 2), " CPU seconds."))
+                   paste0(round(runtime / 60, 2), " minutes."),
+                   paste0(round(runtime, 2), " seconds."))
 
 
 
@@ -376,12 +368,12 @@ UPG = function(y,                    #dependent   variable
 
   #s3 class attribute
 
-  if(type == "probit")   class(UPG.output) = "UPG.Probit"
-  if(type == "logit")    class(UPG.output) = "UPG.Logit"
-  if(type == "mnl")      class(UPG.output) = "UPG.MNL"
-  if(type == "binomial") class(UPG.output) = "UPG.Binomial"
+  if(model == "probit")   class(UPG.output) = "UPG.Probit"
+  if(model == "logit")    class(UPG.output) = "UPG.Logit"
+  if(model == "mnl")      class(UPG.output) = "UPG.MNL"
+  if(model == "binomial") class(UPG.output) = "UPG.Binomial"
 
-  if(verbose) cat("Finished! Sampling took",timecat,"\n")
+  if(verbose) cat("Finished! Posterior simulation took",timecat,"\n")
   return(UPG.output)
 
 }

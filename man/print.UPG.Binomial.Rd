@@ -12,7 +12,7 @@
 \item{...}{other print parameters.}
 }
 \description{
-\code{print} provides some basic information about an \code{UPG.Binomial} object.
+\code{print} provides some basic information about a \code{UPG.Binomial} object.
 }
 \examples{
 \donttest{
@@ -22,14 +22,14 @@ data(titanic)
 y  = titanic[,1]
 Ni = titanic[,2]
 X  = titanic[,-c(1,2)]
-results.binomial = UPG(y = y, X = X, Ni = Ni, type = "binomial")
+results.binomial = UPG(y = y, X = X, Ni = Ni, model = "binomial")
 print(results.binomial)
 }
 }
 \seealso{
-\code{\link{summary.UPG.Binomial}} to summarize the estimates of a discrete choice model from an \code{UPG.Binomial} object and create tables.
-\code{\link{predict.UPG.Binomial}} to predict probabilities from a discrete choice model from an \code{UPG.Binomial} object.
-\code{\link{plot.UPG.Binomial}} to plot the results of a discrete choice model from an \code{UPG.Binomial} object.
+\code{\link{summary.UPG.Binomial}} to summarize a \code{UPG.Binomial} object and create tables.
+\code{\link{predict.UPG.Binomial}} to predict probabilities using a \code{UPG.Binomial} object.
+\code{\link{plot.UPG.Binomial}} to plot a \code{UPG.Binomial} object.
 }
 \author{
 Gregor Zens

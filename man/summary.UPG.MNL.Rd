@@ -21,7 +21,7 @@
 
 \item{...}{other summary parameters.}
 
-\item{q}{a numerical vector of length two holding the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.}
+\item{q}{a numerical vector of length two providing the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.}
 
 \item{groups}{a character vector indicating names for the groups, excluding the baseline. The group names must correspond to the ordering in the dependent variable used for estimation.}
 
@@ -29,17 +29,17 @@
 
 \item{digits}{number of digits to be included in output. Last digit will be rounded using \code{round}.}
 
-\item{include}{can be used to summarize and tabulate only a subset of variables. Specificy the columns of X that should be kept in the plot. See examples for further information.}
+\item{include}{can be used to summarize and tabulate only a subset of variables. Specify the columns of X that should be kept in the plot. See examples for further information.}
 
 \item{table}{can be used to return a LaTeX table (\code{'latex'}), a Word table (\code{'pandoc'}) and HTML tables (\code{'html'}) via \code{knitr}. Include package "booktabs" in LaTeX preamble for LaTeX tables.}
 
-\item{cap}{character vector that can be used to specify the table caption is returned.}
+\item{cap}{character vector that can be used to specify the table caption.}
 }
 \value{
 Returns a \code{knitr_kable} object containing the summary table.
 }
 \description{
-\code{summary} generates a summary of estimation results for \code{UPG.MNL} objects. Point estimates, estimated standard deviation as well as credible intervals for each variable are tabulated. In addition, an indicator quickly shows whether the credible interval includes zero or not. In addition, LaTeX, HTML and pandoc tables can be quickly generated via \code{knitr}.
+\code{summary} generates a summary of estimation results for \code{UPG.MNL} objects. Point estimates, estimated standard deviation as well as credible intervals for each variable are tabulated. In addition, an indicator quickly shows whether the credible interval includes zero or not. Moreover, LaTeX, HTML and pandoc tables can be quickly generated via \code{knitr}.
 }
 \examples{
 \donttest{
@@ -48,7 +48,7 @@ library(UPG)
 data(program)
 y = program[,1]
 X = program[,-1]
-results.mnl = UPG(y = y, X = X, type = "mnl")
+results.mnl = UPG(y = y, X = X, model = "mnl")
 
 # basic summary of regression results
 summary(results.mnl)
@@ -62,9 +62,9 @@ summary(results.mnl,
 }
 }
 \seealso{
-\code{\link{plot.UPG.MNL}} to plot the results of a discrete choice model from an \code{UPG.MNL} object.
-\code{\link{predict.UPG.MNL}} to predict probabilities from a discrete choice model from an \code{UPG.MNL} object.
-\code{\link{coef.UPG.MNL}} to extract coefficients from an \code{UPG.MNL} object.
+\code{\link{plot.UPG.MNL}} to plot a \code{UPG.MNL} object.
+\code{\link{predict.UPG.MNL}} to predict probabilities using a \code{UPG.MNL} object.
+\code{\link{coef.UPG.MNL}} to extract coefficients from a \code{UPG.MNL} object.
 }
 \author{
 Gregor Zens

@@ -1,6 +1,6 @@
 \documentclass{article}
 \usepackage{pdfpages}
-%\VignetteIndexEntry{author2019mypaper}
+%\VignetteIndexEntry{UPG_Vignette}
 
 \begin{document}
 \includepdf[pages=-, fitpaper=true]{UPG_Vignette.pdf}

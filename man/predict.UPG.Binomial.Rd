@@ -13,13 +13,13 @@
 
 \item{newdata}{a matrix or a \code{data.frame} containing new explanatory data. The number of columns and the variable ordering must be the same as in the explanatory data used for estimation to generate valid predictions. If no new data is provided, \code{predict} will return predicted probabilities for the data used for estimating the model.}
 
-\item{q}{a numerical vector of length two holding the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.}
+\item{q}{a numerical vector of length two providing the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.}
 }
 \value{
 Returns a list containing posterior means of predicted probabilities as well as the desired credible interval.
 }
 \description{
-\code{predict} generates predicted probabilities from estimated discrete choice models in an \code{UPG.Binomial} object. In addition, credible intervals for these probabilities are computed. Probabilities can be predicted from the data used for estimating the model or for a new data set with the same structure.
+\code{predict} generates predicted probabilities from a \code{UPG.Binomial} object. In addition, credible intervals for these probabilities are computed. Probabilities can be predicted from the data used for estimating the model or for a new data set with the same structure.
 }
 \examples{
 \donttest{
@@ -29,16 +29,16 @@ data(titanic)
 y  = titanic[,1]
 Ni = titanic[,2]
 X  = titanic[,-c(1,2)]
-results.binomial = UPG(y = y, X = X, Ni = Ni, type = "binomial")
+results.binomial = UPG(y = y, X = X, Ni = Ni, model = "binomial")
 
 # extract predicted probabilities
 predict(results.binomial)
 }
 }
 \seealso{
-\code{\link{summary.UPG.Binomial}} to summarize the estimates of a discrete choice model from an \code{UPG.Binomial} object and create tables.
-\code{\link{plot.UPG.Binomial}} to plot the results of a discrete choice model from an \code{UPG.Binomial} object.
-\code{\link{coef.UPG.Binomial}} to extract coefficients from an \code{UPG.Binomial} object.
+\code{\link{summary.UPG.Binomial}} to summarize a \code{UPG.Binomial} object and create tables.
+\code{\link{plot.UPG.Binomial}} to plot a \code{UPG.Binomial} object.
+\code{\link{coef.UPG.Binomial}} to extract coefficients from a \code{UPG.Binomial} object.
 }
 \author{
 Gregor Zens

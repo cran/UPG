@@ -11,7 +11,7 @@
 
 \item{...}{other coef parameters.}
 
-\item{q}{a numerical vector of length two holding the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.}
+\item{q}{a numerical vector of length two providing the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.}
 }
 \value{
 Returns a list containing posterior means and the desired credible interval.
@@ -26,16 +26,16 @@ library(UPG)
 data(program)
 y = program[,1]
 X = program[,-1]
-results.mnl = UPG(y = y, X = X, type = "mnl")
+results.mnl = UPG(y = y, X = X, model = "mnl")
 
 # extract posterior means and credible interval based on 0.025 and 0.975 quantiles
 coef(results.mnl, q = c(0.025, 0.975))
 }
 }
 \seealso{
-\code{\link{summary.UPG.MNL}} to summarize the estimates of a discrete choice model from an \code{UPG.MNL} object and create tables.
-\code{\link{predict.UPG.MNL}} to predict probabilities from a discrete choice model from an \code{UPG.MNL} object.
-\code{\link{plot.UPG.MNL}} to plot the results of a discrete choice model from an \code{UPG.MNL} object.
+\code{\link{summary.UPG.MNL}} to summarize a \code{UPG.MNL} object and create tables.
+\code{\link{predict.UPG.MNL}} to predict probabilities using a \code{UPG.MNL} object.
+\code{\link{plot.UPG.MNL}} to plot a \code{UPG.MNL} object.
 }
 \author{
 Gregor Zens

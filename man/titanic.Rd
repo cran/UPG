@@ -9,9 +9,9 @@ A data frame with 78 rows and 6 variables:
 \describe{
   \item{survived}{number of passengers that survived}
   \item{total}{number of total passengers}
-  \item{intercept}{an intercept}
-  \item{pclass}{passenger class (1 highest, 3 lowest)}
-  \item{female}{dummy for females}
+  \item{intercept}{an intercept term}
+  \item{pclass}{passenger class (3 is lowest)}
+  \item{female}{binary indicator for female passenger groups}
   \item{age.group}{age group indicator (0-5yrs, 5-10yrs, ...)}
 }
 }

@@ -12,7 +12,7 @@
 \item{...}{other print parameters.}
 }
 \description{
-\code{print} provides some basic information about an \code{UPG.Logit} object.
+\code{print} provides some basic information about a \code{UPG.Logit} object.
 }
 \examples{
 \donttest{
@@ -21,14 +21,14 @@ library(UPG)
 data(lfp)
 y = lfp[,1]
 X = lfp[,-1]
-results.logit = UPG(y = y, X = X, type = "logit", verbose=TRUE)
+results.logit = UPG(y = y, X = X, model = "logit")
 print(results.logit)
 }
 }
 \seealso{
-\code{\link{summary.UPG.Logit}} to summarize the estimates of a discrete choice model from an \code{UPG.Logit} object and create tables.
-\code{\link{predict.UPG.Logit}} to predict probabilities from a discrete choice model from an \code{UPG.Logit} object.
-\code{\link{plot.UPG.Logit}} to plot the results of a discrete choice model from an \code{UPG.Logit} object.
+\code{\link{summary.UPG.Logit}} to summarize a \code{UPG.Logit} object and create tables.
+\code{\link{predict.UPG.Logit}} to predict probabilities using a \code{UPG.Logit} object.
+\code{\link{plot.UPG.Logit}} to plot a \code{UPG.Logit} object.
 }
 \author{
 Gregor Zens

@@ -15,7 +15,7 @@
 Returns a numeric of class \code{logLik} with attributes containing the number of estimated parameters and the number of observations.
 }
 \description{
-\code{logLik} can be used to compute log-likelihoods from \code{UPG.Logit} objects. The log-likelihood is based on the posterior mean of the coefficients and can be used for model selection when combined with,e.g., \code{BIC} or other model selection criteria.
+\code{logLik} can be used to compute log-likelihoods from \code{UPG.Logit} objects. The log-likelihood is based on the posterior mean of the coefficients.
 }
 \examples{
 \donttest{
@@ -24,19 +24,17 @@ library(UPG)
 data(lfp)
 y = lfp[,1]
 X = lfp[,-1]
-results.logit = UPG(y = y, X = X, type = "logit", verbose=TRUE)
+results.logit = UPG(y = y, X = X, model = "logit")
 
 # extract log-likelihood
 ll.logit = logLik(results.logit)
 
-# compute BIC
-BIC(ll.logit)
 }
 }
 \seealso{
-\code{\link{summary.UPG.Logit}} to summarize the estimates of a discrete choice model from an \code{UPG.Logit} object and create tables.
-\code{\link{plot.UPG.Logit}} to plot the results of a discrete choice model from an \code{UPG.Logit} object.
-\code{\link{coef.UPG.Logit}} to extract coefficients from an \code{UPG.Logit} object.
+\code{\link{summary.UPG.Logit}} to summarize a \code{UPG.Logit} object and create tables.
+\code{\link{plot.UPG.Logit}} to plot a \code{UPG.Logit} object.
+\code{\link{coef.UPG.Logit}} to extract coefficients from a \code{UPG.Logit} object.
 }
 \author{
 Gregor Zens

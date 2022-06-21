@@ -31,9 +31,9 @@
 
 \item{ylab}{a character vector of length 1 indicating a title for the y-axis.}
 
-\item{q}{a numerical vector of length two holding the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.}
+\item{q}{a numerical vector of length two providing the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.}
 
-\item{include}{can be used to plot only a subset of variables. Specificy the columns of X that should be kept in the plot. See examples for further information.}
+\item{include}{can be used to plot only a subset of variables. Specify the columns of X that should be kept in the plot. See examples for further information.}
 }
 \value{
 Returns a ggplot2 object.
@@ -48,7 +48,7 @@ library(UPG)
 data(program)
 y = program[,1]
 X = program[,-1]
-results.mnl = UPG(y = y, X = X, type = "mnl")
+results.mnl = UPG(y = y, X = X, model = "mnl")
 
 # plot the results and sort coefficients by average effect size
 plot(results.mnl, sort = TRUE)
@@ -65,9 +65,9 @@ plot(results.mnl,
 }
 }
 \seealso{
-\code{\link{summary.UPG.MNL}} to summarize the estimates of a discrete choice model from an \code{UPG.MNL} object and create tables.
-\code{\link{predict.UPG.MNL}} to predict probabilities from a discrete choice model from an \code{UPG.MNL} object.
-\code{\link{coef.UPG.MNL}} to extract coefficients from an \code{UPG.MNL} object.
+\code{\link{summary.UPG.MNL}} to summarize a \code{UPG.MNL} object and create tables.
+\code{\link{predict.UPG.MNL}} to predict probabilities using a \code{UPG.MNL} object.
+\code{\link{coef.UPG.MNL}} to extract coefficients from a \code{UPG.MNL} object.
 }
 \author{
 Gregor Zens

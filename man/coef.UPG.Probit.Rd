@@ -11,7 +11,7 @@
 
 \item{...}{other coef parameters.}
 
-\item{q}{a numerical vector of length two holding the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.}
+\item{q}{a numerical vector of length two providing the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.}
 }
 \value{
 Returns a matrix containing posterior means and the desired credible interval.
@@ -26,16 +26,16 @@ library(UPG)
 data(lfp)
 y = lfp[,1]
 X = lfp[,-1]
-results.probit = UPG(y = y, X = X, type = "probit", verbose=TRUE)
+results.probit = UPG(y = y, X = X, model = "probit")
 
 # extract posterior means and credible interval based on 0.025 and 0.975 quantiles
 coef(results.probit, q = c(0.025, 0.975))
 }
 }
 \seealso{
-\code{\link{summary.UPG.Probit}} to summarize the estimates of a discrete choice model from an \code{UPG.Probit} object and create tables.
-\code{\link{predict.UPG.Probit}} to predict probabilities from a discrete choice model from an \code{UPG.Probit} object.
-\code{\link{plot.UPG.Probit}} to plot the results of a discrete choice model from an \code{UPG.Probit} object.
+\code{\link{summary.UPG.Probit}} to summarize a \code{UPG.Probit} object and create tables.
+\code{\link{predict.UPG.Probit}} to predict probabilities using a \code{UPG.Probit} object.
+\code{\link{plot.UPG.Probit}} to plot a \code{UPG.Probit} object.
 }
 \author{
 Gregor Zens

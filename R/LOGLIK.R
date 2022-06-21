@@ -2,7 +2,7 @@
 #'
 #' @title Compute log-likelihoods from UPG.Probit objects
 #'
-#' @description \code{logLik} can be used to compute log-likelihoods from \code{UPG.Probit} objects. The log-likelihood is based on the posterior mean of the coefficients and can be used for model selection when combined with,e.g., \code{BIC} or other model selection criteria.
+#' @description \code{logLik} can be used to compute log-likelihoods from \code{UPG.Probit} objects. The log-likelihood is based on the posterior mean of the coefficients.
 #'
 #' @param object an object of class \code{UPG.Probit}.
 #' @param ... other logLik parameters.
@@ -10,9 +10,9 @@
 #' @return Returns a numeric of class \code{logLik} with attributes containing the number of estimated parameters and the number of observations.
 #'
 #' @seealso
-#' \code{\link{summary.UPG.Probit}} to summarize the estimates of a discrete choice model from an \code{UPG.Probit} object and create tables.
-#' \code{\link{plot.UPG.Probit}} to plot the results of a discrete choice model from an \code{UPG.Probit} object.
-#' \code{\link{coef.UPG.Probit}} to extract coefficients from an \code{UPG.Probit} object.
+#' \code{\link{summary.UPG.Probit}} to summarize a \code{UPG.Probit} object and create tables.
+#' \code{\link{plot.UPG.Probit}} to plot a \code{UPG.Probit} object.
+#' \code{\link{coef.UPG.Probit}} to extract coefficients from a \code{UPG.Probit} object.
 #'
 #' @author Gregor Zens
 #'
@@ -23,13 +23,11 @@
 #' data(lfp)
 #' y = lfp[,1]
 #' X = lfp[,-1]
-#' results.probit = UPG(y = y, X = X, type = "probit", verbose=TRUE)
+#' results.probit = UPG(y = y, X = X, model = "probit")
 #'
 #' # extract log-likelihood
 #' ll.probit = logLik(results.probit)
 #'
-#' # compute BIC
-#' BIC(ll.probit)
 #'}
 #' @method  logLik UPG.Probit
 #'
@@ -37,7 +35,7 @@
 logLik.UPG.Probit =  function(object   = NULL,    # estimated UPG object
                               ...){
 
-  means = apply(object$posterior$beta.post, 2, mean)
+  means = apply(object$posterior$beta, 2, mean)
   fit   = object$inputs$X %*% means
   y     = object$inputs$y
   N     = nrow(object$inputs$X)
@@ -57,7 +55,7 @@ logLik.UPG.Probit =  function(object   = NULL,    # estimated UPG object
 #'
 #' @title Compute log-likelihoods from UPG.Logit objects
 #'
-#' @description \code{logLik} can be used to compute log-likelihoods from \code{UPG.Logit} objects. The log-likelihood is based on the posterior mean of the coefficients and can be used for model selection when combined with,e.g., \code{BIC} or other model selection criteria.
+#' @description \code{logLik} can be used to compute log-likelihoods from \code{UPG.Logit} objects. The log-likelihood is based on the posterior mean of the coefficients.
 #'
 #' @param object an object of class \code{UPG.Logit}.
 #' @param ... other logLik parameters.
@@ -65,9 +63,9 @@ logLik.UPG.Probit =  function(object   = NULL,    # estimated UPG object
 #' @return Returns a numeric of class \code{logLik} with attributes containing the number of estimated parameters and the number of observations.
 #'
 #' @seealso
-#' \code{\link{summary.UPG.Logit}} to summarize the estimates of a discrete choice model from an \code{UPG.Logit} object and create tables.
-#' \code{\link{plot.UPG.Logit}} to plot the results of a discrete choice model from an \code{UPG.Logit} object.
-#' \code{\link{coef.UPG.Logit}} to extract coefficients from an \code{UPG.Logit} object.
+#' \code{\link{summary.UPG.Logit}} to summarize a \code{UPG.Logit} object and create tables.
+#' \code{\link{plot.UPG.Logit}} to plot a \code{UPG.Logit} object.
+#' \code{\link{coef.UPG.Logit}} to extract coefficients from a \code{UPG.Logit} object.
 #'
 #' @author Gregor Zens
 #'
@@ -78,13 +76,11 @@ logLik.UPG.Probit =  function(object   = NULL,    # estimated UPG object
 #' data(lfp)
 #' y = lfp[,1]
 #' X = lfp[,-1]
-#' results.logit = UPG(y = y, X = X, type = "logit", verbose=TRUE)
+#' results.logit = UPG(y = y, X = X, model = "logit")
 #'
 #' # extract log-likelihood
 #' ll.logit = logLik(results.logit)
 #'
-#' # compute BIC
-#' BIC(ll.logit)
 #'}
 #' @method  logLik UPG.Logit
 #'
@@ -92,7 +88,7 @@ logLik.UPG.Probit =  function(object   = NULL,    # estimated UPG object
 logLik.UPG.Logit  =  function(object   = NULL,    # estimated UPG object
                               ...){
 
-  means = apply(object$posterior$beta.post, 2, mean)
+  means = apply(object$posterior$beta, 2, mean)
   fit   = object$inputs$X %*% means
   y     = object$inputs$y
   N     = nrow(object$inputs$X)
@@ -112,7 +108,7 @@ logLik.UPG.Logit  =  function(object   = NULL,    # estimated UPG object
 #'
 #' @title Compute log-likelihoods from UPG.MNL objects
 #'
-#' @description \code{logLik} can be used to compute log-likelihoods from \code{UPG.MNL} objects. The log-likelihood is based on the posterior mean of the coefficients and can be used for model selection when combined with,e.g., \code{BIC} or other model selection criteria.
+#' @description \code{logLik} can be used to compute log-likelihoods from \code{UPG.MNL} objects. The log-likelihood is based on the posterior mean of the coefficients.
 #'
 #' @param object an object of class \code{UPG.MNL}.
 #' @param ... other logLik parameters.
@@ -120,9 +116,9 @@ logLik.UPG.Logit  =  function(object   = NULL,    # estimated UPG object
 #' @return Returns a numeric of class \code{logLik} with attributes containing the number of estimated parameters and the number of observations.
 #'
 #' @seealso
-#' \code{\link{summary.UPG.MNL}} to summarize the estimates of a discrete choice model from an \code{UPG.MNL} object and create tables.
-#' \code{\link{plot.UPG.MNL}} to plot the results of a discrete choice model from an \code{UPG.MNL} object.
-#' \code{\link{coef.UPG.MNL}} to extract coefficients from an \code{UPG.MNL} object.
+#' \code{\link{summary.UPG.MNL}} to summarize a \code{UPG.MNL} object and create tables.
+#' \code{\link{plot.UPG.MNL}} to plot a \code{UPG.MNL} object.
+#' \code{\link{coef.UPG.MNL}} to extract coefficients from a \code{UPG.MNL} object.
 #'
 #' @author Gregor Zens
 #'
@@ -133,13 +129,11 @@ logLik.UPG.Logit  =  function(object   = NULL,    # estimated UPG object
 #' data(program)
 #' y = program[,1]
 #' X = program[,-1]
-#' results.mnl = UPG(y = y, X = X, type = "mnl")
+#' results.mnl = UPG(y = y, X = X, model = "mnl")
 #'
 #' # extract log-likelihood
 #' ll.mnl = logLik(results.mnl)
 #'
-#' # compute BIC
-#' BIC(ll.mnl)
 #'}
 #' @method  logLik UPG.MNL
 #'
@@ -147,7 +141,7 @@ logLik.UPG.Logit  =  function(object   = NULL,    # estimated UPG object
 logLik.UPG.MNL       =  function(object   = NULL,    # estimated UPG object
                                  ...){
 
-  means = apply(object$posterior$beta.post, c(2,3), mean)
+  means = apply(object$posterior$beta, c(2,3), mean)
   fit   = object$inputs$X %*% means
   y     = object$inputs$y
   N     = nrow(object$inputs$X)
@@ -170,17 +164,17 @@ logLik.UPG.MNL       =  function(object   = NULL,    # estimated UPG object
 #'
 #' @title Compute log-likelihoods from UPG.Binomial objects
 #'
-#' @description \code{logLik} can be used to compute log-likelihoods from \code{UPG.Binomial} objects. The log-likelihood is based on the posterior mean of the coefficients and can be used for model selection when combined with,e.g., \code{BIC} or other model selection criteria.
+#' @description \code{logLik} can be used to compute log-likelihoods from \code{UPG.Binomial} objects. The log-likelihood is based on the posterior mean of the coefficients.
 #'
 #' @param object an object of class \code{UPG.Binomial}.
 #' @param ... other logLik parameters.
 #'
-#' @return Returns a numeric of class \code{logLik} with attributes containing the number of estimated parameters and the number of observations. Note that the number of observations in binomial models is equal to Ni and not equal to the sample size.
+#' @return Returns a numeric of class \code{logLik} with attributes containing the number of estimated parameters and the number of observations.
 #'
 #' @seealso
-#' \code{\link{summary.UPG.Binomial}} to summarize the estimates of a discrete choice model from an \code{UPG.Binomial} object and create tables.
-#' \code{\link{plot.UPG.Binomial}} to plot the results of a discrete choice model from an \code{UPG.Binomial} object.
-#' \code{\link{coef.UPG.Binomial}} to extract coefficients from an \code{UPG.Binomial} object.
+#' \code{\link{summary.UPG.Binomial}} to summarize a \code{UPG.Binomial} object and create tables.
+#' \code{\link{plot.UPG.Binomial}} to plot a \code{UPG.Binomial} object.
+#' \code{\link{coef.UPG.Binomial}} to extract coefficients from a \code{UPG.Binomial} object.
 #'
 #' @author Gregor Zens
 #'
@@ -192,13 +186,11 @@ logLik.UPG.MNL       =  function(object   = NULL,    # estimated UPG object
 #' y  = titanic[,1]
 #' Ni = titanic[,2]
 #' X  = titanic[,-c(1,2)]
-#' results.binomial = UPG(y = y, X = X, Ni = Ni, type = "binomial")
+#' results.binomial = UPG(y = y, X = X, Ni = Ni, model = "binomial")
 #'
 #' # extract log-likelihood
 #' ll.binomial = logLik(results.binomial)
 #'
-#' # compute BIC
-#' BIC(ll.binomial)
 #'}
 #' @method  logLik UPG.Binomial
 #'
@@ -206,10 +198,10 @@ logLik.UPG.MNL       =  function(object   = NULL,    # estimated UPG object
 logLik.UPG.Binomial  =  function(object   = NULL,    # estimated UPG object
                                  ...){
 
-  means = apply(object$posterior$beta.post, 2, mean)
+  means = apply(object$posterior$beta, 2, mean)
   fit   = object$inputs$X %*% means
   y     = object$inputs$y
-  N     = sum(object$inputs$Ni) #note: don't use sample size following raftery 1995: BMS in Social Res.
+  N     = sum(object$inputs$Ni) # following raftery 1995: BMS in Social Res.
   K     = ncol(object$inputs$X)
   Ni    = object$inputs$Ni
 

@@ -15,7 +15,7 @@
 Returns a numeric of class \code{logLik} with attributes containing the number of estimated parameters and the number of observations.
 }
 \description{
-\code{logLik} can be used to compute log-likelihoods from \code{UPG.MNL} objects. The log-likelihood is based on the posterior mean of the coefficients and can be used for model selection when combined with,e.g., \code{BIC} or other model selection criteria.
+\code{logLik} can be used to compute log-likelihoods from \code{UPG.MNL} objects. The log-likelihood is based on the posterior mean of the coefficients.
 }
 \examples{
 \donttest{
@@ -24,19 +24,17 @@ library(UPG)
 data(program)
 y = program[,1]
 X = program[,-1]
-results.mnl = UPG(y = y, X = X, type = "mnl")
+results.mnl = UPG(y = y, X = X, model = "mnl")
 
 # extract log-likelihood
 ll.mnl = logLik(results.mnl)
 
-# compute BIC
-BIC(ll.mnl)
 }
 }
 \seealso{
-\code{\link{summary.UPG.MNL}} to summarize the estimates of a discrete choice model from an \code{UPG.MNL} object and create tables.
-\code{\link{plot.UPG.MNL}} to plot the results of a discrete choice model from an \code{UPG.MNL} object.
-\code{\link{coef.UPG.MNL}} to extract coefficients from an \code{UPG.MNL} object.
+\code{\link{summary.UPG.MNL}} to summarize a \code{UPG.MNL} object and create tables.
+\code{\link{plot.UPG.MNL}} to plot a \code{UPG.MNL} object.
+\code{\link{coef.UPG.MNL}} to extract coefficients from a \code{UPG.MNL} object.
 }
 \author{
 Gregor Zens

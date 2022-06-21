@@ -27,7 +27,7 @@ bibentry(
   year = "2020",
   institution = "arXiv preprint",
   number = {2011.06898},
-  textVersion = "Fr\u00FChwirth-Schnatter, S., Zens, G., & Wagner, H. (2020). Ultimate P\u00F3lya Gamma Samplers - Efficient MCMC for possibly imbalanced binary and categorical data. arXiv preprint arXiv:2011.06898."
+  textVersion = "Fr\u00FChwirth-Schnatter, S., Zens, G. & Wagner, H. (2020). Ultimate P\u00F3lya Gamma Samplers - Efficient MCMC for possibly imbalanced binary and categorical data. arXiv preprint arXiv:2011.06898."
 )
 
 bibentry(

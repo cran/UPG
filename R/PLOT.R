@@ -8,16 +8,16 @@
 #' @param names a character vector indicating names for the variables used in the plots.
 #' @param xlab  a character vector of length 1 indicating a title for the x-axis.
 #' @param ylab  a character vector of length 1 indicating a title for the y-axis.
-#' @param q a numerical vector of length two holding the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.
-#' @param include can be used to plot only a subset of variables. Specificy the columns of X that should be kept in the plot. See examples for further information.
+#' @param q a numerical vector of length two providing the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.
+#' @param include can be used to plot only a subset of variables. Specify the columns of X that should be kept in the plot. See examples for further information.
 #' @param ... other plot parameters.
 #'
 #' @return Returns a ggplot2 object.
 #'
 #' @seealso
-#' \code{\link{summary.UPG.Probit}} to summarize the estimates of a discrete choice model from an \code{UPG.Probit} object and create tables.
-#' \code{\link{predict.UPG.Probit}} to predict probabilities from a discrete choice model from an \code{UPG.Probit} object.
-#' \code{\link{coef.UPG.Probit}} to extract coefficients from an \code{UPG.Probit} object.
+#' \code{\link{summary.UPG.Probit}} to summarize a \code{UPG.Probit} object and create tables.
+#' \code{\link{predict.UPG.Probit}} to predict probabilities using a \code{UPG.Probit} object.
+#' \code{\link{coef.UPG.Probit}} to extract coefficients from a \code{UPG.Probit} object.
 #'
 #' @author Gregor Zens
 #'
@@ -28,7 +28,7 @@
 #' data(lfp)
 #' y = lfp[,1]
 #' X = lfp[,-1]
-#' results.probit = UPG(y = y, X = X, type = "probit", verbose=TRUE)
+#' results.probit = UPG(y = y, X = X, model = "probit")
 #'
 #' # plot the results and sort coefficients by effect size
 #' plot(results.probit, sort = TRUE)
@@ -64,9 +64,9 @@ plot.UPG.Probit = function(x         = NULL,
   #create some global variables such that r cmd check is happy
   variable = iter = value = NULL
 
-  c.point  = apply(x$posterior$beta.post[,include,1,drop=F], 2, mean)
-  c.upper  = apply(x$posterior$beta.post[,include,1,drop=F], 2, quantile, q[2])
-  c.lower  = apply(x$posterior$beta.post[,include,1,drop=F], 2, quantile, q[1])
+  c.point  = apply(x$posterior$beta[,include,drop=F], 2, mean)
+  c.upper  = apply(x$posterior$beta[,include,drop=F], 2, quantile, q[2])
+  c.lower  = apply(x$posterior$beta[,include,drop=F], 2, quantile, q[1])
 
   plot.df  = data.frame(c.point,c.upper,c.lower,names)
 
@@ -93,7 +93,7 @@ plot.UPG.Probit = function(x         = NULL,
            geom_point(data = plot.df, aes(x=names, y=c.upper), size=-1) + #for correct scaling
            geom_point(data = plot.df, aes(x=names, y=c.lower), size=-1) + #for correct scaling
            theme_bw()   +
-           geom_hline(yintercept = 0, col="red",lty=2) +
+           geom_hline(yintercept = 0,lty=2) +
            coord_flip() +
            xlab(ylab)   +
            ylab(xlab)
@@ -115,16 +115,16 @@ plot.UPG.Probit = function(x         = NULL,
 #' @param names a character vector indicating names for the variables used in the plots.
 #' @param xlab  a character vector of length 1 indicating a title for the x-axis.
 #' @param ylab  a character vector of length 1 indicating a title for the y-axis.
-#' @param q a numerical vector of length two holding the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.
-#' @param include can be used to plot only a subset of variables. Specificy the columns of X that should be kept in the plot. See examples for further information.
+#' @param q a numerical vector of length two providing the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.
+#' @param include can be used to plot only a subset of variables. Specify the columns of X that should be kept in the plot. See examples for further information.
 #' @param ... other plot parameters.
 #'
 #' @return Returns a ggplot2 object.
 #'
 #' @seealso
-#' \code{\link{summary.UPG.Logit}} to summarize the estimates of a discrete choice model from an \code{UPG.Logit} object and create tables.
-#' \code{\link{predict.UPG.Logit}} to predict probabilities from a discrete choice model from an \code{UPG.Logit} object.
-#' \code{\link{coef.UPG.Logit}} to extract coefficients from an \code{UPG.Logit} object.
+#' \code{\link{summary.UPG.Logit}} to summarize a \code{UPG.Logit} object and create tables.
+#' \code{\link{predict.UPG.Logit}} to predict probabilities using a \code{UPG.Logit} object.
+#' \code{\link{coef.UPG.Logit}} to extract coefficients from a \code{UPG.Logit} object.
 #'
 #' @author Gregor Zens
 #'
@@ -135,7 +135,7 @@ plot.UPG.Probit = function(x         = NULL,
 #' data(lfp)
 #' y = lfp[,1]
 #' X = lfp[,-1]
-#' results.logit = UPG(y = y, X = X, type = "logit", verbose=TRUE)
+#' results.logit = UPG(y = y, X = X, model = "logit")
 #'
 #' # plot the results and sort coefficients by effect size
 #' plot(results.logit, sort = TRUE)
@@ -171,9 +171,9 @@ plot.UPG.Logit  = function(x         = NULL,
   #create some global variables such that r cmd check is happy
   variable = iter = value = NULL
 
-  c.point  = apply(x$posterior$beta.post[,include,1,drop=F], 2, mean)
-  c.upper  = apply(x$posterior$beta.post[,include,1,drop=F], 2, quantile, q[2])
-  c.lower  = apply(x$posterior$beta.post[,include,1,drop=F], 2, quantile, q[1])
+  c.point  = apply(x$posterior$beta[,include,drop=F], 2, mean)
+  c.upper  = apply(x$posterior$beta[,include,drop=F], 2, quantile, q[2])
+  c.lower  = apply(x$posterior$beta[,include,drop=F], 2, quantile, q[1])
 
   plot.df  = data.frame(c.point,c.upper,c.lower,names)
 
@@ -200,7 +200,7 @@ plot.UPG.Logit  = function(x         = NULL,
     geom_point(data = plot.df, aes(x=names, y=c.upper), size=-1) + #for correct scaling
     geom_point(data = plot.df, aes(x=names, y=c.lower), size=-1) + #for correct scaling
     theme_bw()   +
-    geom_hline(yintercept = 0, col="red",lty=2) +
+    geom_hline(yintercept = 0,lty=2) +
     coord_flip() +
     xlab(ylab)   +
     ylab(xlab)
@@ -222,16 +222,16 @@ plot.UPG.Logit  = function(x         = NULL,
 #' @param groups  a character vector indicating names for the groups excluding the baseline. The group names must correspond to the ordering in the dependent variable used for estimation.
 #' @param xlab  a character vector of length 1 indicating a title for the x-axis.
 #' @param ylab  a character vector of length 1 indicating a title for the y-axis.
-#' @param q a numerical vector of length two holding the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.
-#' @param include can be used to plot only a subset of variables. Specificy the columns of X that should be kept in the plot. See examples for further information.
+#' @param q a numerical vector of length two providing the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.
+#' @param include can be used to plot only a subset of variables. Specify the columns of X that should be kept in the plot. See examples for further information.
 #' @param ... other plot parameters.
 #'
 #' @return Returns a ggplot2 object.
 #'
 #' @seealso
-#' \code{\link{summary.UPG.MNL}} to summarize the estimates of a discrete choice model from an \code{UPG.MNL} object and create tables.
-#' \code{\link{predict.UPG.MNL}} to predict probabilities from a discrete choice model from an \code{UPG.MNL} object.
-#' \code{\link{coef.UPG.MNL}} to extract coefficients from an \code{UPG.MNL} object.
+#' \code{\link{summary.UPG.MNL}} to summarize a \code{UPG.MNL} object and create tables.
+#' \code{\link{predict.UPG.MNL}} to predict probabilities using a \code{UPG.MNL} object.
+#' \code{\link{coef.UPG.MNL}} to extract coefficients from a \code{UPG.MNL} object.
 #'
 #' @author Gregor Zens
 #'
@@ -242,7 +242,7 @@ plot.UPG.Logit  = function(x         = NULL,
 #' data(program)
 #' y = program[,1]
 #' X = program[,-1]
-#' results.mnl = UPG(y = y, X = X, type = "mnl")
+#' results.mnl = UPG(y = y, X = X, model = "mnl")
 #'
 #' # plot the results and sort coefficients by average effect size
 #' plot(results.mnl, sort = TRUE)
@@ -282,9 +282,9 @@ plot.UPG.MNL    = function(x         = NULL,
   #create some global variables such that r cmd check is happy
   variable = iter = value = NULL
 
-  c.point  = apply(x$posterior$beta.post[,include,,drop=F], c(2,3), mean)
-  c.upper  = apply(x$posterior$beta.post[,include,,drop=F], c(2,3), quantile, q[2])
-  c.lower  = apply(x$posterior$beta.post[,include,,drop=F], c(2,3), quantile, q[1])
+  c.point  = apply(x$posterior$beta[,include,,drop=F], c(2,3), mean)
+  c.upper  = apply(x$posterior$beta[,include,,drop=F], c(2,3), quantile, q[2])
+  c.lower  = apply(x$posterior$beta[,include,,drop=F], c(2,3), quantile, q[1])
 
 
   if(nrow(c.point) == 1){c.upper = matrix(c.upper,nrow=1); c.lower = matrix(c.lower,nrow=1)}
@@ -345,7 +345,7 @@ plot.UPG.MNL    = function(x         = NULL,
                                width=0, col="grey60") +
              geom_point(position = position_dodge(width=.5)) +
              theme_bw()   +
-             geom_hline(yintercept = 0, col="red",lty=2) +
+             geom_hline(yintercept = 0,lty=2) +
              coord_flip() +
              xlab(ylab)     +
              ylab(xlab) +
@@ -366,16 +366,16 @@ plot.UPG.MNL    = function(x         = NULL,
 #' @param names a character vector indicating names for the variables used in the plots.
 #' @param xlab  a character vector of length 1 indicating a title for the x-axis.
 #' @param ylab  a character vector of length 1 indicating a title for the y-axis.
-#' @param q a numerical vector of length two holding the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.
-#' @param include can be used to plot only a subset of variables. Specificy the columns of X that should be kept in the plot. See examples for further information.
+#' @param q a numerical vector of length two providing the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.
+#' @param include can be used to plot only a subset of variables. Specify the columns of X that should be kept in the plot. See examples for further information.
 #' @param ... other plot parameters.
 #'
 #' @return Returns a ggplot2 object.
 #'
 #' @seealso
-#' \code{\link{summary.UPG.Binomial}} to summarize the estimates of a discrete choice model from an \code{UPG.Binomial} object and create tables.
-#' \code{\link{predict.UPG.Binomial}} to predict probabilities from a discrete choice model from an \code{UPG.Binomial} object.
-#' \code{\link{coef.UPG.Binomial}} to extract coefficients from an \code{UPG.Binomial} object.
+#' \code{\link{summary.UPG.Binomial}} to summarize a \code{UPG.Binomial} object and create tables.
+#' \code{\link{predict.UPG.Binomial}} to predict probabilities using a \code{UPG.Binomial} object.
+#' \code{\link{coef.UPG.Binomial}} to extract coefficients from a \code{UPG.Binomial} object.
 #'
 #' @author Gregor Zens
 #'
@@ -387,7 +387,7 @@ plot.UPG.MNL    = function(x         = NULL,
 #' y  = titanic[,1]
 #' Ni = titanic[,2]
 #' X  = titanic[,-c(1,2)]
-#' results.binomial = UPG(y = y, X = X, Ni = Ni, type = "binomial")
+#' results.binomial = UPG(y = y, X = X, Ni = Ni, model = "binomial")
 #'
 #' # plot the results and sort coefficients by effect size
 #' plot(results.binomial, sort = TRUE)
@@ -423,9 +423,9 @@ plot.UPG.Binomial  = function(x         = NULL,
   #create some global variables such that r cmd check is happy
   variable = iter = value = NULL
 
-  c.point  = apply(x$posterior$beta.post[,include,1,drop=F], 2, mean)
-  c.upper  = apply(x$posterior$beta.post[,include,1,drop=F], 2, quantile, q[2])
-  c.lower  = apply(x$posterior$beta.post[,include,1,drop=F], 2, quantile, q[1])
+  c.point  = apply(x$posterior$beta[,include,drop=F], 2, mean)
+  c.upper  = apply(x$posterior$beta[,include,drop=F], 2, quantile, q[2])
+  c.lower  = apply(x$posterior$beta[,include,drop=F], 2, quantile, q[1])
 
   plot.df  = data.frame(c.point,c.upper,c.lower,names)
 
@@ -452,7 +452,7 @@ plot.UPG.Binomial  = function(x         = NULL,
     geom_point(data = plot.df, aes(x=names, y=c.upper), size=-1) + #for correct scaling
     geom_point(data = plot.df, aes(x=names, y=c.lower), size=-1) + #for correct scaling
     theme_bw()   +
-    geom_hline(yintercept = 0, col="red",lty=2) +
+    geom_hline(yintercept = 0,lty=2) +
     coord_flip() +
     xlab(ylab)   +
     ylab(xlab)

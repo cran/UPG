@@ -13,7 +13,7 @@ UPG.Diag.Binomial(object = NULL)
 Returns a list containing effective sample size, effective sampling rate and inefficiency factors for each coefficient.
 }
 \description{
-\code{UPG.Diag.Binomial} computes inefficiency factors, effective sample size and effective sampling rate based on the posterior distributions in an \code{UPG.Binomial} object.
+\code{UPG.Diag.Binomial} computes inefficiency factors, effective sample size and effective sampling rate based on the posterior distributions in a \code{UPG.Binomial} object.
 }
 \author{
 Gregor Zens

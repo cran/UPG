@@ -11,10 +11,10 @@ A data frame with 753 rows and 9 variables:
   \item{intercept}{intercept}
   \item{k5}{number of children 5 years old or younger}
   \item{k618}{number of children 6 to 18 years old}
-  \item{age}{in years}
-  \item{wc}{wife went to college dummy}
-  \item{hc}{husband went to college dummy}
-  \item{lwg}{log expected wage rate; for women in the labor force, the actual wage rate; for women not in the labor force, an imputed value based on the regression of \code{lwg} on the other variables}
+  \item{age}{age in years}
+  \item{wc}{binary indicator for college education of the wife}
+  \item{hc}{binary indicator for college education of the husband}
+  \item{lwg}{log expected wage rate; for women in the labor force, the actual wage rate; for women not in the labor force, an imputed value based on a regression of \code{lwg} on the other variables}
   \item{inc}{family income exclusive of wife's income}
 }
 }

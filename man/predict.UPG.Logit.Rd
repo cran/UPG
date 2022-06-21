@@ -13,13 +13,13 @@
 
 \item{newdata}{a matrix or a \code{data.frame} containing new explanatory data. The number of columns and the variable ordering must be the same as in the explanatory data used for estimation to generate valid predictions. If no new data is provided, \code{predict} will return predicted probabilities for the data used for estimating the model.}
 
-\item{q}{a numerical vector of length two holding the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.}
+\item{q}{a numerical vector of length two providing the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.}
 }
 \value{
 Returns a list containing posterior means of predicted probabilities as well as the desired credible interval.
 }
 \description{
-\code{predict} generates predicted probabilities from estimated discrete choice models in an \code{UPG.Logit} object. In addition, credible intervals for these probabilities are computed. Probabilities can be predicted from the data used for estimating the model or for a new data set with the same structure.
+\code{predict} generates predicted probabilities from a \code{UPG.Logit} object. In addition, credible intervals for these probabilities are computed. Probabilities can be predicted from the data used for estimating the model or for a new data set with the same structure.
 }
 \examples{
 \donttest{
@@ -28,16 +28,16 @@ library(UPG)
 data(lfp)
 y = lfp[,1]
 X = lfp[,-1]
-results.logit = UPG(y = y, X = X, type = "logit", verbose=TRUE)
+results.logit = UPG(y = y, X = X, model = "logit")
 
 # extract predicted probabilities
 predict(results.logit)
 }
 }
 \seealso{
-\code{\link{summary.UPG.Logit}} to summarize the estimates of a discrete choice model from an \code{UPG.Logit} object and create tables.
-\code{\link{plot.UPG.Logit}} to plot the results of a discrete choice model from an \code{UPG.Logit} object.
-\code{\link{coef.UPG.Logit}} to extract coefficients from an \code{UPG.Logit} object.
+\code{\link{summary.UPG.Logit}} to summarize a \code{UPG.Logit} object and create tables.
+\code{\link{plot.UPG.Logit}} to plot a \code{UPG.Logit} object.
+\code{\link{coef.UPG.Logit}} to extract coefficients from a \code{UPG.Logit} object.
 }
 \author{
 Gregor Zens

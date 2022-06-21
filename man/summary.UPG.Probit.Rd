@@ -2,7 +2,7 @@
 % Please edit documentation in R/SUMMARY.R
 \name{summary.UPG.Probit}
 \alias{summary.UPG.Probit}
-\title{Estimation results and tables for UPG.Probit objects}
+\title{Estimation result summary and tables for UPG.Probit objects}
 \usage{
 \method{summary}{UPG.Probit}(
   object = NULL,
@@ -20,23 +20,23 @@
 
 \item{...}{other summary parameters.}
 
-\item{q}{a numerical vector of length two holding the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.}
+\item{q}{a numerical vector of length two providing the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.}
 
 \item{names}{a character vector indicating names for the variables used in the output.}
 
 \item{digits}{number of digits to be included in output. Last digit will be rounded using \code{round}.}
 
-\item{include}{can be used to summarize and tabulate only a subset of variables. Specificy the columns of X that should be kept in the plot. See examples for further information.}
+\item{include}{can be used to summarize and tabulate only a subset of variables. Specify the columns of X that should be kept in the plot. See examples for further information.}
 
 \item{table}{can be used to return a LaTeX table (\code{'latex'}), a Word table (\code{'pandoc'}) and HTML tables (\code{'html'}) via \code{knitr}. Include package "booktabs" in LaTeX preamble for LaTeX tables.}
 
-\item{cap}{character vector that can be used to specify the table caption is returned.}
+\item{cap}{character vector that can be used to specify the table caption.}
 }
 \value{
 Returns a \code{knitr_kable} object containing the summary table.
 }
 \description{
-\code{summary} generates a summary of estimation results for \code{UPG.Probit} objects. Point estimates, estimated standard deviation as well as credible intervals for each variable are tabulated. In addition, an indicator quickly shows whether the credible interval includes zero or not. In addition, LaTeX, HTML and pandoc tables can be quickly generated via \code{knitr}.
+\code{summary} generates a summary of estimation results for \code{UPG.Probit} objects. Point estimates, estimated standard deviation as well as credible intervals for each variable are tabulated. In addition, an indicator quickly shows whether the credible interval includes zero or not. Moreover, LaTeX, HTML and pandoc tables can be quickly generated via \code{knitr}.
 }
 \examples{
 \donttest{
@@ -45,7 +45,7 @@ library(UPG)
 data(lfp)
 y = lfp[,1]
 X = lfp[,-1]
-results.probit = UPG(y = y, X = X, type = "probit", verbose=TRUE)
+results.probit = UPG(y = y, X = X, model = "probit")
 
 # basic summary of regression results
 summary(results.probit)
@@ -58,9 +58,9 @@ summary(results.probit,
 }
 }
 \seealso{
-\code{\link{plot.UPG.Probit}} to plot the results of a discrete choice model from an \code{UPG.Probit} object.
-\code{\link{predict.UPG.Probit}} to predict probabilities from a discrete choice model from an \code{UPG.Probit} object.
-\code{\link{coef.UPG.Probit}} to extract coefficients from an \code{UPG.Probit} object.
+\code{\link{plot.UPG.Probit}} to plot a \code{UPG.Probit} object.
+\code{\link{predict.UPG.Probit}} to predict probabilities using a \code{UPG.Probit} object.
+\code{\link{coef.UPG.Probit}} to extract coefficients from a \code{UPG.Probit} object.
 }
 \author{
 Gregor Zens

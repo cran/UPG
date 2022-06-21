@@ -13,7 +13,7 @@ UPG.Diag.Logit(object = NULL)
 Returns a list containing effective sample size, effective sampling rate and inefficiency factors for each coefficient.
 }
 \description{
-\code{UPG.Diag.Logit} computes inefficiency factors, effective sample size and effective sampling rate based on the posterior distributions in an \code{UPG.Logit} object.
+\code{UPG.Diag.Logit} computes inefficiency factors, effective sample size and effective sampling rate based on the posterior distributions in a \code{UPG.Logit} object.
 }
 \author{
 Gregor Zens

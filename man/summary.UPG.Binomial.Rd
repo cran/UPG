@@ -20,23 +20,23 @@
 
 \item{...}{other summary parameters.}
 
-\item{q}{a numerical vector of length two holding the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.}
+\item{q}{a numerical vector of length two providing the posterior quantiles to be extracted. Default are 0.025 and 0.975 quantiles.}
 
 \item{names}{a character vector indicating names for the variables used in the output.}
 
 \item{digits}{number of digits to be included in output. Last digit will be rounded using \code{round}.}
 
-\item{include}{can be used to summarize and tabulate only a subset of variables. Specificy the columns of X that should be kept in the plot. See examples for further information.}
+\item{include}{can be used to summarize and tabulate only a subset of variables. Specify the columns of X that should be kept in the plot. See examples for further information.}
 
 \item{table}{can be used to return a LaTeX table (\code{'latex'}), a Word table (\code{'pandoc'}) and HTML tables (\code{'html'}) via \code{knitr}. Include package "booktabs" in LaTeX preamble for LaTeX tables.}
 
-\item{cap}{character vector that can be used to specify the table caption is returned.}
+\item{cap}{character vector that can be used to specify the table caption.}
 }
 \value{
 Returns a \code{knitr_kable} object containing the summary table.
 }
 \description{
-\code{summary} generates a summary of estimation results for \code{UPG.Binomial} objects. Point estimates, estimated standard deviation as well as credible intervals for each variable are tabulated. In addition, an indicator quickly shows whether the credible interval includes zero or not. In addition, LaTeX, HTML and pandoc tables can be quickly generated via \code{knitr}.
+\code{summary} generates a summary of estimation results for \code{UPG.Binomial} objects. Point estimates, estimated standard deviation as well as credible intervals for each variable are tabulated. In addition, an indicator quickly shows whether the credible interval includes zero or not. Moreover, LaTeX, HTML and pandoc tables can be quickly generated via \code{knitr}.
 }
 \examples{
 \donttest{
@@ -46,7 +46,7 @@ data(titanic)
 y  = titanic[,1]
 Ni = titanic[,2]
 X  = titanic[,-c(1,2)]
-results.binomial = UPG(y = y, X = X, Ni = Ni, type = "binomial")
+results.binomial = UPG(y = y, X = X, Ni = Ni, model = "binomial")
 
 # basic summary of regression results
 summary(results.binomial)
@@ -59,9 +59,9 @@ summary(results.binomial,
 }
 }
 \seealso{
-\code{\link{plot.UPG.Binomial}} to plot the results of a discrete choice model from an \code{UPG.Binomial} object.
-\code{\link{predict.UPG.Binomial}} to predict probabilities from a discrete choice model from an \code{UPG.Binomial} object.
-\code{\link{coef.UPG.Binomial}} to extract coefficients from an \code{UPG.Binomial} object.
+\code{\link{plot.UPG.Binomial}} to plot a \code{UPG.Binomial} object.
+\code{\link{predict.UPG.Binomial}} to predict probabilities using a \code{UPG.Binomial} object.
+\code{\link{coef.UPG.Binomial}} to extract coefficients from a \code{UPG.Binomial} object.
 }
 \author{
 Gregor Zens
