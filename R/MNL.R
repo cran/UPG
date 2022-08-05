@@ -41,7 +41,7 @@ upg.mnl   = function(y.matrix,
 
   # STARTING VALUES
 
-  if(is.null(beta.start)) {beta.draw = array(0, c(P, K-1))} else {beta.draw = beta.start}
+  if(is.null(beta.start)) {beta.draw = array(0, c(P, K-1))} else {beta.draw = beta.start[, -K]}
 
   # FUNCTION FOR SAMPLING LATENT UTILITIES
 

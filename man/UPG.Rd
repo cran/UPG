@@ -52,7 +52,7 @@ UPG(y,
 
 \item{delta.boost}{logical variable indicating whether scale-based parameter expansion boosting should be used.}
 
-\item{beta.start}{provides starting values for beta (e.g. for use within Gibbs sampler)}
+\item{beta.start}{provides starting values for beta (e.g. for use within Gibbs sampler). Baseline coefficients need to be zero for multinomial model.}
 }
 \value{
 Depending on the estimated model, \code{UPG()} returns a \code{UPG.Probit}, \code{UPG.Logit}, \code{UPG.MNL} or \code{UPG.Binomial} object.

@@ -37,7 +37,7 @@
 #' @param verbose logical variable indicating whether progress should be printed during estimation.
 #' @param gamma.boost logical variable indicating whether location-based parameter expansion boosting should be used.
 #' @param delta.boost logical variable indicating whether scale-based parameter expansion boosting should be used.
-#' @param beta.start provides starting values for beta (e.g. for use within Gibbs sampler)
+#' @param beta.start provides starting values for beta (e.g. for use within Gibbs sampler). Baseline coefficients need to be zero for multinomial model.
 #'
 #' @return Depending on the estimated model, \code{UPG()} returns a \code{UPG.Probit}, \code{UPG.Logit}, \code{UPG.MNL} or \code{UPG.Binomial} object.
 #'
