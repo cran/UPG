@@ -1,9 +1,13 @@
+Changes in Version 0.3.2 (May 2023)
+  - Several fixes and improvements in the algorithms.
+  - Updated vignette.
+
 Changes in Version 0.3.1 (August 2022)
   - Bugfix in MNL model. Thanks to Kristian Romano for finding and patching.
 
 Changes in Version 0.3.0 (July 2022)
-  - Updated Algorithms
-  - Several Minor Fixes
+  - Updated Algorithms.
+  - Several Minor Fixes.
 
 Changes in Version 0.2.2 (January 2021)
   - First CRAN release version.

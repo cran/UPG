@@ -1,16 +1,16 @@
-upg.mnl   = function(y.matrix,
-                     X,
-                     nsave       = 10000,
-                     nburn       = 2000,
-                     d0          = 2.5,
-                     D0          = 1.5,
-                     G0          = 100,
-                     B0          = 4,
-                     A0          = 4,
-                     gamma.boost = T,
-                     delta.boost = T,
-                     beta.start  = NULL,
-                     verbose     = T)
+upg.mnl   =   function(y.matrix,
+                       X,
+                       nsave       = 10000,
+                       nburn       = 2000,
+                       d0          = 2.5,
+                       D0          = 1.5,
+                       G0          = 100,
+                       B0          = 4,
+                       A0          = 4,
+                       gamma.boost = T,
+                       delta.boost = T,
+                       beta.start  = NULL,
+                       verbose     = T)
 {
 
   # - - - - MCMC SETUP
@@ -41,46 +41,19 @@ upg.mnl   = function(y.matrix,
 
   # STARTING VALUES
 
-  if(is.null(beta.start)) {beta.draw = array(0, c(P, K-1))} else {beta.draw = beta.start[, -K]}
-
-  # FUNCTION FOR SAMPLING LATENT UTILITIES
-
-  sample.util.new = function(lambda.star,
-                             lambda.k,
-                             lambda.a,
-                             y.matrix,
-                             categ,
-                             y.categ,
-                             K){
-
-
-    N   = length(lambda.star)
-    Ui  = runif(N)
-    Vki = runif(N)
-    V0i = runif(N)
-    Vai = runif(N)
-
-    ut.matrix   = matrix(nrow = N, ncol = 3)
-
-    #first part of difference
-    utilities = - log(Ui) / lambda.star
-
-    #individual is categ
-    ut.matrix[,1] = utilities - (log(Vki) / lambda.k) * as.numeric(y.categ != categ)
-
-    #individual is other
-    ut.matrix[,2] = utilities - (log(Vai) / lambda.a) * as.numeric((y.categ %in% c(categ,K)))
-
-    #individual is baseline
-    ut.matrix[,3] = utilities - log(V0i) * as.numeric(y.categ != K)
-
-    return(-log(ut.matrix))
-
-  }
+  if(is.null(beta.start)) {beta.draw = array(0, c(P, K-1))} else {beta.draw = beta.start}
+  z = matrix(0, N, K)
 
   # VERBOSE
 
   if(verbose) pb = txtProgressBar(min = 0, max = ntot, style = 3)
+
+  # LOG INVERSE GAMMA DENSITY
+  dinvgamma.log = function(x, a, b){
+
+    a * log(b) - lgamma(a) + (a + 1) * log(1 / x) - b/x
+
+  }
 
   # - - - - START MCMC ALGORITHM
 
@@ -89,37 +62,23 @@ upg.mnl   = function(y.matrix,
     for(kk in 1:(K-1)){ # - START LOOP OVER ALL CATEGORIES BUT BASELINE
 
 
-      # - STEP 1: SAMPLE LATENT UTILITIES
+      # - - - - STEP 1: SAMPLE LATENT UTILITIES
 
       lambda      = cbind(exp(X %*% beta.draw), 1)
       lambda.star = rowSums(lambda)
-      lambda.k    = lambda[,kk]
-      lambda.a    = rowSums(lambda[,-c(kk, ncol(lambda)), drop=F])
+      Ui          = runif(N)
+      Vi          = matrix(runif(N * K), N, K)
+      ut.matrix   = - log(Ui) / lambda.star - (log(Vi) / lambda) * (1 - y.matrix)
+      y.d         = - log(ut.matrix)
+      z           = y.d[,kk] - matrixStats::rowMaxs(y.d[,-kk,drop=F])
+      xi          = log(rowSums(lambda[,-kk,drop=F]))
 
-      y.d         = sample.util.new(lambda.star,
-                                    lambda.k,
-                                    lambda.a,
-                                    y.matrix = y.matrix,
-                                    categ    = kk,
-                                    K        = K,
-                                    y.categ  = y.categ)
+      # - - - - STEP 2: SAMPLE LATENT SCALING FACTORS
 
-      # DIFFERENCE OF ACTIVE CATEGORY AND BASELINE
-
-      z         = y.d[, 1] - y.d[, 3]
-
-      # DIFFERENCE OF ACTIVE CATEGORY TO MAXIMUM
-
-      allothers = y.d[, -1]
-      diffUtil  = y.d[,  1] - allothers[cbind(seq_len(nrow(allothers)), max.col(allothers))]
+      omega       = pgdraw::pgdraw(2, abs(z + xi - log(lambda[,kk])))
 
 
-      # - STEP 2: SAMPLE LATENT SCALING FACTORS
-
-      omega  = pgdraw::pgdraw(2, abs(z - log(lambda.k)))
-
-
-      # - STEP 3: SHIFT MOVE
+      # - - - - STEP 3: SHIFT MOVE
 
       # DRAW FROM WORKING PRIOR
 
@@ -129,62 +88,100 @@ upg.mnl   = function(y.matrix,
 
       # SHIFT UTILITIES
 
-      ztilde     = z        + gamma.star
-      diffUtil   = diffUtil + gamma.star
+      ztilde     = z + gamma.star
 
       # POSTERIOR QUANTITIES FOR GAMMA CONDITIONAL
-
       XW         = X * omega
       tXW        = t(XW)
       Bn         = chol2inv(chol(A0.inv + tXW %*% X))
-      mb         = colSums(XW)
-      mg         = sum(ztilde * omega)
-      mn         = tXW %*% ztilde
-      tmbBn      = t(mb) %*% Bn
-      Gn         = 1 / ( (1 / G0) + sum(omega) - tmbBn %*% mb)
-      gn         = Gn * (mg - tmbBn %*% mn)
 
-      # TRUNCATION POINTS FOR GAMMA CONDITIONAL
+      if(gamma.boost){
 
-      U          = ifelse(sum(y.matrix[,kk]) == 0,  Inf,  min(diffUtil[y.matrix[, kk] == 1]))
-      L          = ifelse(sum(y.matrix[,kk]) == N, -Inf,  max(diffUtil[y.matrix[, kk] == 0]))
+        mi         = (ztilde + xi) * omega# - 0.5
+        mb         = colSums(XW)
+        mg         = sum(mi)
+        mn         = t(X) %*% mi
+        tmbBn      = t(mb) %*% Bn
+        Gn         = 1 / ( (1 / G0) + sum(omega) - tmbBn %*% mb)
+        gn         = Gn * (mg - tmbBn %*% mn)
 
-      # SIMULATE FROM GAMMA POSTERIOR
+        # TRUNCATION POINTS FOR GAMMA CONDITIONAL
 
-      gamma      = truncnorm::rtruncnorm(1, a = L, b = U, mean = gn, sd = sqrt(Gn))
+        U          = ifelse(sum(y.matrix[,kk]) == 0,  Inf,  min(ztilde[y.matrix[, kk] == 1]))
+        L          = ifelse(sum(y.matrix[,kk]) == N, -Inf,  max(ztilde[y.matrix[, kk] == 0]))
+
+        # SIMULATE FROM GAMMA POSTERIOR
+
+        gamma      = truncnorm::rtruncnorm(1, a = L, b = U, mean = gn, sd = sqrt(Gn))
+
+      }
 
       if(!gamma.boost){gamma=0}
 
       # REVERSE SHIFT
-
       z.shift    = ztilde - gamma
 
 
-      # - STEP 4: SCALE MOVE
+
+      # - - - - STEP 4: SCALE MOVE
 
       # DRAW FROM WORKING PRIOR
-
-      delta.star = 1/rgamma(1, d0, D0)
-
       if(!delta.boost){delta.star  = 1}
 
-      # POSTERIOR QUANTITIES FOR DELTA CONDITIONAL
+      # DRAW FROM DELTA CONDITIONAL USING RESAMPLING METHOD BASED ON IG AUXILIARY PRIOR
+      if(delta.boost){
 
-      mn = tXW %*% z.shift
-      bn = Bn %*% mn
+        delta.star = 1/rgamma(1, d0, D0)
 
-      # SIMULATE FROM DELTA POSTERIOR
 
-      delta      = 1 / rgamma(1, d0 + 0.5 * N, D0 + 0.5 * delta.star * (t(bn) %*% A0.inv %*% bn + sum(omega * (z.shift - X %*% bn)^2)))
+        # POSTERIOR QUANTITIES COEFFICIENTS
+        ma          = t(X) %*% ((z.shift) * omega)
+        mb          = t(X) %*% (omega * (xi))
+
+        dI          = c(d0 + 0.5 * N)
+        DI          = c(D0 + 0.5 * delta.star * (sum((z.shift)^2 * omega) - t(ma) %*% Bn %*% ma))
+        BI          = - c(sqrt(delta.star) * (sum(z.shift * omega * (xi)) - t(ma) %*% Bn %*% mb))
+
+        # MODE AND CURVATURE OF POSTERIOR
+        dm = (16 * (DI^2)) / (BI + sqrt(BI^2 + 16 * DI * (dI +1)))^2
+        IP = - sqrt(BI^2 + 16 * DI * (dI + 1)) / (4 * (dm)^(5/2))
+
+        # MOMENTS OF AUXILIARY PRIOR
+        dI.star = - IP * (dm^2) - 1
+        DI.star = dm * (dI.star + 1)
+
+
+        # DRAW CANDIDATES FROM MATCHED AUXILIARY PRIOR (INVERSE GAMMA)
+
+        delta.candidates = 1 / rgamma(30, dI.star, DI.star)
+        lprior           = dinvgamma.log(delta.candidates, dI.star, DI.star)
+
+        # RESAMPLING
+
+        lweights         = - (dI + 1) * log(delta.candidates) - DI / delta.candidates + BI / sqrt(delta.candidates) - lprior
+        lweights         = lweights - max(lweights)
+        weights          = exp(lweights)
+        weights          = weights / sum(weights)
+
+        # DRAW DELTA
+
+        delta.index = sample(1:length(delta.candidates), 1, prob = weights)
+        delta       = delta.candidates[delta.index]
+
+
+      }
 
       if(!delta.boost){delta      = 1}
 
+      # - - - - STEP 5: SAMPLE COEFFICIENTS
 
-      # - STEP 5: SAMPLE COEFFICIENTS
+      mb               = t(X) %*% (omega * (xi))
+      ma               = t(X) %*% (omega * (sqrt(delta.star / delta) * z.shift))
+      mk               = mb + ma
 
-      sqrtBn          = t(chol(Bn))
-      beta.draw[, kk] = sqrt(delta.star / delta) * bn + sqrtBn %*% rnorm(P)
-
+      bn               = (Bn %*% mk)
+      sqrtBn           = t(chol(Bn))
+      beta.draw[,kk]   = bn + sqrtBn %*% rnorm(P)
 
     } # - END LOOP OVER ALL CATEGORIES BUT BASELINE
 
@@ -203,13 +200,11 @@ upg.mnl   = function(y.matrix,
 
   # - - - - END MCMC ALGORITHM
 
-  # add zero dimension for baseline coefficients
+  # ADD BASELINE CATEGORY (RESTRICTED TO ZERO)
 
   beta.store.bl       = array(0, c(nsave, P, K))
   beta.store.bl[,,-K] = beta.store
   beta.store          = beta.store.bl
-
-
 
   return(list(y = y.matrix, X = X, beta = beta.store))
 

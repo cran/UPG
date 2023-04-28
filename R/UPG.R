@@ -49,7 +49,7 @@
 #' @author Gregor Zens
 #'
 #' @examples
-#'
+#' \donttest{
 #' # load package
 #' library(UPG)
 #'
@@ -81,6 +81,7 @@
 #' Ni = titanic[,2]
 #' X  = titanic[,-c(1,2)]
 #' results.binomial = UPG(y = y, X = X, Ni = Ni, model = "binomial", burnin = 100)
+#'}
 #'
 #' @import ggplot2
 #' @import knitr
@@ -117,6 +118,8 @@ UPG = function(y,                     # dependent variable
   if(missing(model))    stop("Please provide the model you want to estimate using the 'model' argument.")
 
   if(!(model %in% c("probit","logit","mnl","binomial"))) stop("'model' must be either 'probit', 'logit', 'mnl' or 'binomial'.")
+
+  if(model == "mnl" & length(unique(y)) < 3){model == "logit"; warning("Changed model to 'logit' as only two distinct categories are present in y.")}
 
   y = as.matrix(y, ncol=1)
   X = as.matrix(X, nrow=nrow(y))

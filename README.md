@@ -1,11 +1,5 @@
 # **UPG**: Efficient Bayesian Regression Models for Binary and Categorical Outcomes
 
-<!-- badges: start -->
-[![CRAN](http://www.r-pkg.org/badges/version/UPG)](https://cran.r-project.org/package=UPG)
-[![month](http://cranlogs.r-pkg.org/badges/UPG)](https://www.r-pkg.org/pkg/UPG)
-[![total](http://cranlogs.r-pkg.org/badges/grand-total/UPG)](https://www.r-pkg.org/pkg/UPG)
-<!-- badges: end -->
-
 **UPG** offers efficient Bayesian implementations of regression models for binary and categorical data. The package can be used to estimate Bayesian versions of probit, logit, multinomial logit and binomial logit models. In this context, the Bayesian paradigm is especially useful for uncertainty quantification and solving issues related to rare events and (quasi-)perfect separation. **UPG** allows for efficient posterior sampling in cases with imbalanced data as the implemented algorithms are based on the marginal data augmentation schemes developed in Frühwirth-Schnatter, Zens, and Wagner (2020). Several functions are available for tabulating and visualizing results as well as for predictive exercises. 
 
 ## Installation

@@ -61,7 +61,7 @@ Depending on the estimated model, \code{UPG()} returns a \code{UPG.Probit}, \cod
 \code{UPG} estimates Bayesian regression models for binary or categorical outcomes using samplers based on marginal data augmentation.
 }
 \examples{
-
+\donttest{
 # load package
 library(UPG)
 
@@ -93,6 +93,7 @@ y  = titanic[,1]
 Ni = titanic[,2]
 X  = titanic[,-c(1,2)]
 results.binomial = UPG(y = y, X = X, Ni = Ni, model = "binomial", burnin = 100)
+}
 
 }
 \seealso{
