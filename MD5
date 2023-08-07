@@ -1,4 +1,4 @@
-253b47c1f0e774dbbc1856889880d043 *DESCRIPTION
+c84dc7b096928be1e499ddf60f7cc4f9 *DESCRIPTION
 f75d1a56e260217d21516b4f0995bd99 *NAMESPACE
 9326eecb2fe2409ede1ebdb9e90f7d1c *NEWS
 d4773f97ca73baff3295da4f6c169858 *R/BINOMIAL.R
@@ -21,7 +21,7 @@ bb496d700dd971fec3f01c5828ee25d0 *build/vignette.rds
 76d0437b93e2307331baeaafbe1c93bb *data/titanic.rda
 c4c2ea33465ebb8536960efa79d5b3ed *inst/CITATION
 9b7f4792246732bff9f83897ea6dd380 *inst/doc/vignette.Rnw
-040903151f29838159a2636f3ba7e5a3 *inst/doc/vignette.pdf
+637160161fd543777271430917390f4e *inst/doc/vignette.pdf
 9bb0f12abc15dfbcbc2fd0083ae66b5e *man/UPG.Diag.Binomial.Rd
 58a2ff1c4de35c9e0cb3031005086bc2 *man/UPG.Diag.Logit.Rd
 166c5207c538425dbcdca2eb04dc1aac *man/UPG.Diag.MNL.Rd
