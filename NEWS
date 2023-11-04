@@ -1,3 +1,10 @@
+Changes in Version 0.3.4 (November 2023)
+  - Fixed encoding issue and reference.
+  - Fixed minor bug in summary table code.
+
+Changes in Version 0.3.3 (August 2023)
+  - Fixed encoding issue and changed maintainer mail.
+
 Changes in Version 0.3.2 (May 2023)
   - Several fixes and improvements in the algorithms.
   - Updated vignette.

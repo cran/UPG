@@ -84,7 +84,7 @@ summary.UPG.Probit = function(object = NULL,            #estimation output
 
   if(is.null(table)){
 
-  result = kable(df, align = c("r","r","r","r","c"), row.names = T)
+  result = kable(df, align = c("r","r","r","r","c"), row.names = T, format = "pipe")
 
 
   } else {
@@ -213,7 +213,7 @@ summary.UPG.Logit  = function(object = NULL,            #estimation output
 
   if(is.null(table)){
 
-    result = kable(df, align = c("r","r","r","r","c"), row.names = T)
+    result = kable(df, align = c("r","r","r","r","c"), row.names = T, format = "pipe")
 
 
   } else {
@@ -396,7 +396,7 @@ summary.UPG.MNL       = function(object = NULL,            #estimation output
 
   if(is.null(table)){
 
-    result = kable(df, align = c("r","r","r","r","c"), row.names = T)
+    result = kable(df, align = c("r","r","r","r","c"), row.names = T, format = "pipe")
 
 
   } else {
@@ -532,7 +532,7 @@ summary.UPG.Binomial  = function(object = NULL,            #estimation output
 
   if(is.null(table)){
 
-    result = kable(df, align = c("r","r","r","r","c"), row.names = T)
+    result = kable(df, align = c("r","r","r","r","c"), row.names = T, format = "pipe")
 
 
   } else {
