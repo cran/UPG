@@ -41,7 +41,7 @@ upg.mnl   =   function(y.matrix,
 
   # STARTING VALUES
 
-  if(is.null(beta.start)) {beta.draw = array(0, c(P, K-1))} else {beta.draw = beta.start}
+  if(is.null(beta.start)) {beta.draw = array(0, c(P, K-1))} else {beta.draw = beta.start[, -K]}
   z = matrix(0, N, K)
 
   # VERBOSE
@@ -149,7 +149,6 @@ upg.mnl   =   function(y.matrix,
         # MOMENTS OF AUXILIARY PRIOR
         dI.star = - IP * (dm^2) - 1
         DI.star = dm * (dI.star + 1)
-
 
         # DRAW CANDIDATES FROM MATCHED AUXILIARY PRIOR (INVERSE GAMMA)
 

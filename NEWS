@@ -1,3 +1,6 @@
+Changes in Version 0.3.4 (November 2024)
+  - Fixed minor bug in checks for MNL model.
+
 Changes in Version 0.3.4 (November 2023)
   - Fixed encoding issue and reference.
   - Fixed minor bug in summary table code.
